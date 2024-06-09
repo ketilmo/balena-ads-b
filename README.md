@@ -1,9 +1,9 @@
 
 ![balena ADS-B Flight Tracker](https://raw.githubusercontent.com/ketilmo/balena-ads-b/master/docs/images/header.png)
 
-**ADS-B Flight Tracker running on balena with support for FlightAware, Flightradar24, Plane Finder, OpenSky Network, AirNav RadarBox, ADSB Exchange, and Wingbits.**
+**ADS-B Flight Tracker running on balena with support for FlightAware, Flightradar24, Plane Finder, OpenSky Network, AirNav RadarBox, ADSB Exchange, Wingbits, adsb.fi, ADSB.lol, ADS-B One, airplanes.live, Planespotters.net, TheAirTraffic, AvDelphi, HP Radar, RadarPlane and Fly Italy ADSB.**
 
-Contribute to the flight tracking community! Feed your local ADS-B data from an [RTL-SDR](https://www.rtl-sdr.com/) USB dongle and a supported device (see below) running balenaOS to the tracking services [FlightAware](https://flightaware.com/), [Flightradar24](https://www.flightradar24.com/), [Plane Finder](https://planefinder.net/), [OpenSky Network](https://opensky-network.org/), [AirNav RadarBox](https://www.radarbox.com/), [ADSB Exchange](https://adsbexchange.com) and [Wingbits](https://wingbits.com). In return, you will receive complimentary premium accounts (or cryptocurrency tokens) worth several hundred dollars annually!
+Contribute to the flight tracking community! Feed your local ADS-B data from an [RTL-SDR](https://www.rtl-sdr.com/) USB dongle and a supported device (see below) running balenaOS to the tracking services [FlightAware](https://flightaware.com/), [Flightradar24](https://www.flightradar24.com/), [Plane Finder](https://planefinder.net/), [OpenSky Network](https://opensky-network.org/), [AirNav RadarBox](https://www.radarbox.com/), [ADSB Exchange](https://adsbexchange.com), [Wingbits](https://wingbits.com), [adsb.fi](https://adsb.fi/), [ADSB.lol](https://adsb.lol/), [ADS-B One](https://adsb.one) [airplanes.live](https://airplanes.live/), [Planespotters.net](https://www.planespotters.net/), [TheAirTraffic](https://theairtraffic.com/), [AvDelphi](https://www.avdelphi.com/), [HP Radar](https://hpradar.com/), [RadarPlane](https://radarplane.com/) and [Fly Italy ADSB](https://flyitalyadsb.com/). In return, you can receive complimentary premium accounts (or cryptocurrency tokens) worth several hundred dollars annually!
 
 # Stay in the loop
 
@@ -111,7 +111,9 @@ Software packages downloaded, installed, and configured by the balena-ads-b scri
 - [Part 7 – Configure RadarBox](#part-7--configure-radarbox)
   * [Alternative A: Port an existing RadarBox receiver](#alternative-a-port-an-existing-radarbox-receiver)
   * [Alternative B: Setup a new RadarBox receiver](#alternative-b-setup-a-new-radarbox-receiver)
-- [Part 8 – Configure ADSB Exchange](#part-8--configure-adsb-exchange)
+- [Part 8 – Configure ADSB Exchange and clones](#part-8--configure-adsb-exchange-and-clones)
+  * [Enable ADSB Exchange](#enable-adsb-exchange)
+  * [Enable ADSB Exchange Clones](#enable-adsb-exchange-clones)
 - [Part 9 – Configure Wingbits](#part-9--configure-wingbits)
   * [Alternative A: Port an existing Wingbits receiver](#alternative-a-port-an-existing-wingbits-receiver)
   * [Alternative B: Setup a new Wingbits receiver](#alternative-b-setup-a-new-wingbits-receiver)
@@ -135,7 +137,7 @@ These sites suggest the Raspberry Pi 3 Model B+ as the preferred device. Still, 
 
 In addition to the device, you will need an RTL-SDR-compatible USB dongle. The dongles are based on a digital television tuner, and numerous types will work – both generic TV sticks and specialized ADS-B sticks (produced by FlightAware). Although both options work, the ADS-B sticks seem to perform a little better.
 
-If you live in the US, and want to track UAT traffic in addition to ADS-B traffic, you can use two dongles in parallell. Please note that the blue FlightAware USB devices should only be used for ADS-B traffic, as they have an integrated filter optimized explicitly for the 1090 MHz frequencies. The orange FlightAware USB devices work well for tracking UAT traffic. See [Part 9 – Configure UAT (Optional and US only)](#part-9--configure-uat-optional-and-us-only) for more details.
+If you live in the US, and want to track UAT traffic in addition to ADS-B traffic, you can use two dongles in parallell. Please note that the blue FlightAware USB devices should only be used for ADS-B traffic, as they have an integrated filter optimized explicitly for the 1090 MHz frequencies. The orange FlightAware USB devices work well for tracking UAT traffic. See [Part 10 – Configure UAT (Optional and US only)](#part-10--configure-uat-optional-and-us-only) for more details.
 
 # Part 2 – Setup balena and configure the device
 
@@ -318,8 +320,9 @@ If you have not previously set up a RadarBox receiver that you want to reuse, do
  9. You might be asked to enter your feeder's location and altitude *above the ground.* Enter the same values you entered earlier in the `LAT` and `LON` variables. When asked for the antenna's altitude, specify it in meters (or feet) *above the ground* – NOT above sea level, as done previously. If you are not asked to enter this information, you can do it manually by clicking the *Edit* link under your receiver's ID on the left-hand side of the screen. 
  10. Finally, verify that RadarBox is receiving data from your receiver. You'll find your receiver by clicking on the *Account* menu at [radarbox.com](https://www.radarbox.com) under the *Stations* accordion. 
 
-# Part 8 – Configure ADSB Exchange
+# Part 8 – Configure ADSB Exchange and clones
 
+## Enable ADSB Exchange
 1. Head back to your device's page on the balena dashboard. Inside the *Terminal* section, click *Select a target*, then *adsb-exchange*, and finally *Start terminal session*. This will open a terminal which lets you interact directly with your ADSB Exchange container.
 2. At the prompt, type `/usr/local/share/adsbexchange-stats/create-uuid.sh` followed by return. Your ADSB-Exchange UUID is displayed. Note it down.
 3. At the same prompt, type `/create-sitename.sh` followed by return. Enter a friendly name for your feeder as per the instructions on the screen (e.g. your location). Hit return and note down the result.
@@ -328,6 +331,34 @@ If you have not previously set up a RadarBox receiver that you want to reuse, do
 6. Restart the *adsb-exchange* service under *Services* by clicking the "cycle" icon next to the service names.
 7. Next, wait a minute or two for the service to restart and head over to ADSB Exchange's 
 [Feeder Status](https://www.adsbexchange.com/myip/) page from a PC on the same network as the feeder. Verify that your feeder is shown as registered and that ADSB Exchange is receiving your feed and MLAT data. You can also verify your feeder's performance at the [ADSB Exchange Feeder Map](https://map.adsbexchange.com/mlat-map/) by searching for your site name.
+
+# Enable ADSB Exchange clones
+This project supports a number of ADSB Exchange clones that arose after the sale of ADSB Exchange. Currently there is support for [adsb.fi](https://adsb.fi/), [ADSB.lol](https://adsb.lol/), [ADS-B One](https://adsb.one/), [airplanes.live](https://airplanes.live/), [Planespotters.net](https://www.planespotters.net/), [TheAirTraffic](https://theairtraffic.com/), [AvDelphi](https://www.avdelphi.com/), [HP Radar](https://hpradar.com/), [RadarPlane](https://radarplane.com/) and [Fly Italy ADSB](https://flyitalyadsb.com/). If you would like any new services adding, please create a PR adding the new service or if you do not know how then please [open an issue](https://github.com/ketilmo/balena-ads-b/issues/new) with your request.
+
+For these services, you currently do not need any login or API credentials so there is no need to make an account with them (although some of them do offer this) and no credentials to add in balenaCloud. However, you do have to selectively enable each service (or you can enable all of them, or all but ADSB Exchange).
+
+To enable all services, or all services apart from ADSB Exchange, you can use one of the following *Device Variables*:
+
+- `ADSB_EXCHANGE_ENABLE_ALL=true`
+- `ADSB_EXCHANGE_ENABLE_ALL_BUT_ADSBX=true`
+
+Note that you can use `true`, `enable`, `enabled`, `1`, `y`, `yes` or `on` for the value, and capitalisation does not matter. If you use `ADSB_EXCHANGE_ENABLE_ALL` this will enable ADSB Exchange and you will then need to add the `ADSB_EXCHANGE_UUID` and `ADSB_EXCHANGE_SITENAME` as described [in the section above](#enable-adsb-exchange).
+
+To enable a single service, you would need to add a *Device Variable* with one of the following value (or several if you want to enable multiple services):
+
+- `ADSB_EXCHANGE_ENABLE=true` (you also need to add the `ADSB_EXCHANGE_UUID` and `ADSB_EXCHANGE_SITENAME` as described [in the section above](#enable-adsb-exchange).
+- `ADSB_FI_ENABLE=true`
+- `ADSB_LOL_ENABLE=true`
+- `ADSB_ONE_ENABLE=true`
+- `AIRPLANES_LIVE_ENABLE=true`
+- `PLANESPOTTERS_ENABLE=true`
+- `THE_AIR_TRAFFIC_ENABLE=true`
+- `AV_DELPHI_ENABLE=true`
+- `HPRADAR_ENABLE=true`
+- `RADARPLANE_ENABLE=true`
+- `FLY_ITALY_ADSB_ENABLE=true`
+
+Lastly, these services all require a UUID to be passed to identify devices in their system. If you have set an `ADSB_EXCHANGE_UUID` the same UUID will be used for all services. If you do not have ADSB Exchange enabled and the `ADSB_EXCHANGE_UUID` variable set, the system will automatically generate one for you. However, if you would like, you can also set a UUID manually using the *Device Variable* with name `UUID` and with a UUID as a value (e.g. 2ddf6698-ea34-4c39-bbce-a8c3ddaf9bbd). You can use an [online UUID generator](https://www.uuidgenerator.net/) to generate one should you want to.
 
 # Part 9 – Configure Wingbits
 
