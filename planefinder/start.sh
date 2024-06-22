@@ -43,7 +43,7 @@ echo " "
 # Configure Planefinder according to environment variables.
 envsubst < /etc/pfclient-config.json.tpl> /etc/pfclient-config.json
 
-# Start pfclinen and put it in the background.
+# Start pfclient and put it in the background.
 /usr/bin/pfclient --config_path=/etc/pfclient-config.json --log_path=/dev/console &
 
 # Wait for any services to exit.
