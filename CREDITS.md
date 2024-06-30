@@ -3,7 +3,7 @@
 This project automatically downloads, installs and configures several third party software packages. The software packages in question and their licenses are listed below.
 
 - [adsbexchange-978](#adsbexchange-978)
-- [balena-dash](#balena-dash)
+- [kiosk](#kiosk)
 - [dump978](#dump978)
 - [dump1090](#dump1090)
 - [fr24feed](#fr24feed)
@@ -43,9 +43,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-## balena-dash
+## kiosk
 ### URL
-https://github.com/balenalabs/balena-dash
+https://github.com/balena-io-experimental/browser
 
 ### License
 Not specified.

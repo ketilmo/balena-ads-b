@@ -395,7 +395,7 @@ If you live in the US and have configuered UAT feeding, you can explore the data
 ## Disabling specific services
 You can disable any of the balena-ads-b services by creating a *Device Variable* named `DISABLED_SERVICES` with the services you want to disable as comma-separated values. For example, if you want to disable the dump1090fa service, you set the `DISABLED_SERVICES` variable to `dump1090fa`. If you want to disable the dump1090fa and piaware services, you set the `DISABLED_SERVICES` variable to `dump1090fa, piaware`.
 
-**Please note:** Due to how these services are integrated, it's not currently possible to disable the `wifi-connect` and `kiosk` services.
+**Please note:** Due to how these services are integrated, it's not currently possible to fully disable the `wifi-connect` and `kiosk` services. However, you can stop `wifi-connect` by setting the `PORTAL_INTERFACE` variable to `lo`. Similarly, you can stop the `kiosk` service from starting by setting the `DISPLAY_NUM` variable to `&& exit 0`.
 
 ## Adaptive gain configuration
 The dump1090-fa service can be configured to adapt the tuner gain to changing conditions automatically. You can [read more about how this works](https://github.com/flightaware/dump1090/blob/master/README.adaptive-gain.md#default-settings) at FlightAware's website. 

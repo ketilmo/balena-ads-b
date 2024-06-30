@@ -5,7 +5,7 @@ volumes:
 services:
   kiosk:
     restart: always
-    build: ./balena-dash/kiosk
+    build: ./kiosk
     privileged: true
     ports:
       - 8081:8080

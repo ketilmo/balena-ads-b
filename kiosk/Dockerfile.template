@@ -1,0 +1,3 @@
+FROM bh.cr/balenalabs/browser-%%BALENA_ARCH%%/2.7.0
+
+RUN install_packages cec-utils
