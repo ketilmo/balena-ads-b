@@ -26,7 +26,6 @@ data:
     - "raspberrypi4-64"
     - "raspberrypi400-64"
     - "raspberrypi5"
-    - "fincm3"
     - "jetson-nano"
     - "jetson-nano-2gb-devkit"
     - "intel-nuc"
