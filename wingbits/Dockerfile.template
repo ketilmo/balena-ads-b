@@ -8,12 +8,12 @@ ENV WINGBITS_DEVICE_ID=
 ENV RECEIVER_HOST=dump1090-fa
 ENV RECEIVER_PORT=30005
 
-# renovate: datasource=wingbits depName=wingbits-version versioning=loose
+# renovate: datasource=custom.wingbits depName=wingbits-version versioning=loose
 ENV WINGBITS_CONFIG_VERSION=0.0.8
-# renovate: datasource=git-refs depName=wingbits/config versioning=loose
-ENV WINGBITS_COMMIT_ID=0194f1a6b12963f63de234fd10f8338700a80a2a
+# renovate: datasource=custom.wingbits_version_json depName=wingbits-version-json versioning=loose
+ENV WINGBITS_COMMIT_ID=850b8746
 
-ARG PERM_INSTALL="curl gettext-base tini ncurses-bin zlib1g" 
+ARG PERM_INSTALL="curl gettext-base tini ncurses-bin zlib1g jq" 
 
 RUN apt update && \
 	apt install -y $PERM_INSTALL && \
@@ -52,9 +52,7 @@ RUN chmod +x /tmp/wingbits_installer.sh && \
 	mkdir -p /run/wingbits-feed && \
 	mkdir -p /etc/wingbits && \
 	echo "$WINGBITS_CONFIG_VERSION" > /etc/wingbits/version && \
+        echo "$WINGBITS_COMMIT_ID" > /etc/wingbits/json-version && \
 	rm -rf /tmp/*
-
-RUN curl -o /etc/vector/vector.yaml https://gitlab.com/wingbits/config/-/raw/$WINGBITS_COMMIT_ID/vector.yaml
-RUN sed -i 's|DEVICE_ID|WINGBITS_DEVICE_ID|g' /etc/vector/vector.yaml
 
 ENTRYPOINT ["/usr/bin/tini", "--", "/start.sh"]
