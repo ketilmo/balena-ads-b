@@ -240,6 +240,7 @@ services:
     build: ./wingbits
     image: wingbits
     restart: unless-stopped
+    privileged: true
     environment:
       - WINGBITS_DEVICE_ID=
       - LAT=

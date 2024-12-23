@@ -24,11 +24,9 @@
     {
       "customType": "regex",
       "fileMatch": ["(^|/)Dockerfile\\.[^/]*$"],
-      "matchStrings": ["WINGBITS_COMMIT_ID=(?<currentDigest>.*?)\\n"],
-      "currentValueTemplate": "master",
-      "depNameTemplate": "wingbits/config",
-      "packageNameTemplate": "https://gitlab.com/wingbits/config",
-      "datasourceTemplate": "git-refs"
+      "matchStrings": ["WINGBITS_COMMIT_ID=(?<currentValue>.*?)\\n"],
+      "depNameTemplate": "wingbits-version-json",
+      "datasourceTemplate": "custom.wingbits_version_json"
     },
     {
       "customType": "regex",
@@ -60,11 +58,17 @@
       "format": "plain"
     },
     "wingbits": {
-      "defaultRegistryUrlTemplate": "https://gitlab.com/wingbits/config/-/raw/master/download.sh",
+      "defaultRegistryUrlTemplate": "https://install.wingbits.com/download.sh",
       "transformTemplates": [
         "{ \"releases\": [{ \"version\": $trim($[0].releases.version.$match(/WINGBITS_CONFIG_VERSION=\"([^\\s]+)\"/).groups[0]) }] }"
       ],
       "format": "plain"
+    },
+    "wingbits_version_json": {
+      "defaultRegistryUrlTemplate": "https://install.wingbits.com/linux-arm64.json",
+      "transformTemplates": [
+        "{\"releases\":[{\"version\": $.Version}]}"
+      ],
     }
   },
   "packageRules": [
