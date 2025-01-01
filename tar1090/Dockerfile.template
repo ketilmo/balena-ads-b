@@ -1,0 +1,7 @@
+FROM ghcr.io/sdr-enthusiasts/docker-tar1090:latest AS base
+
+COPY start.sh /usr/src/app/start_custom.sh
+
+RUN chmod +x /usr/src/app/start_custom.sh
+
+ENTRYPOINT ["/usr/bin/tini", "--", "/usr/src/app/start_custom.sh"]
