@@ -1,7 +1,46 @@
-FROM ghcr.io/sdr-enthusiasts/docker-tar1090:latest AS base
+FROM balenalib/%%BALENA_ARCH%%-debian:bookworm AS base
+LABEL maintainer="https://github.com/ketilmo"
 
-COPY start.sh /usr/src/app/start_custom.sh
+ENV RECEIVER_HOST=dump1090-fa
+ENV RECEIVER_PORT=30005
 
-RUN chmod +x /usr/src/app/start_custom.sh
+ARG PERM_INSTALL="curl gettext-base tini ncurses-dev zlib1g jq bash-builtins lighttpd" 
 
-ENTRYPOINT ["/usr/bin/tini", "--", "/usr/src/app/start_custom.sh"]
+RUN apt update && \
+	apt install -y $PERM_INSTALL && \
+	apt clean && apt autoclean && apt autoremove && \
+	rm -rf /var/lib/apt/lists/*
+
+FROM base AS buildstep
+
+# renovate: datasource=github-tags depName=wiedehopf/readsb versioning=loose
+ARG READSB_VERSION=v3.14.1645
+ARG TEMP_INSTALL="git gcc make libusb-1.0-0-dev build-essential debhelper zlib1g-dev python3-dev libzstd-dev pkg-config"
+
+WORKDIR /tmp
+
+RUN apt update && \
+	apt install -y $TEMP_INSTALL
+
+WORKDIR /tmp
+
+RUN git clone --single-branch https://github.com/wiedehopf/readsb.git && \
+	cd readsb && \
+	git checkout tags/${READSB_VERSION} && \
+	make -j3 AIRCRAFT_HASH_BITS=14
+
+FROM base AS release
+
+COPY tar1090_installer.sh /tmp
+COPY start.sh /
+COPY --from=buildstep /tmp/readsb/readsb /usr/bin/readsb
+
+WORKDIR /tmp
+
+RUN chmod +x /tmp/tar1090_installer.sh && \
+	./tar1090_installer.sh && \
+	chmod +x /start.sh && \
+	mkdir -p /run/readsb && \
+	rm -rf /tmp/*
+
+ENTRYPOINT ["/usr/bin/tini", "--", "/start.sh"]
