@@ -22,8 +22,6 @@ missing_variables=false
 
 [ -z "$LAT" ] && echo "Receiver latitude is missing, will abort startup." && missing_variables=true || echo "Receiver latitude is set: $LAT"
 [ -z "$LON" ] && echo "Receiver longitude is missing, will abort startup." && missing_variables=true || echo "Receiver longitude is set: $LON"
-[ -z "$BEASTHOST" ] && echo "Receiver host is missing, will abort startup." && missing_variables=true || echo "Receiver host is set: $BEASTHOST"
-[ -z "$MLATHOST" ] && echo "Receiver port is missing, will abort startup." && missing_variables=true || echo "Receiver port is set: $MLATHOST"
 
 # End defining all the required configuration variables.
 
@@ -39,4 +37,17 @@ fi
 echo "Settings verified, proceeding with startup."
 echo " "
 
-LONG=$LON
+# Start readsb and put in the background.
+/usr/bin/readsb --net --net-only --debug=n --quiet --net-connector localhost,30006,json_out --write-json /run/readsb --net-beast-reduce-interval 0.5 --net-heartbeat 60 --net-ro-size 1280 --net-ro-interval 0.2 --net-ro-port 0 --net-sbs-port 0 --net-bi-port 30154 --net-bo-port 0 --net-ri-port 0 --net-connector "$RECEIVER_HOST","$RECEIVER_PORT",beast_in
+
+# Start lighthttpd and put it in the background.
+/usr/sbin/lighttpd -D -f /etc/lighttpd/lighttpd.conf 2>&1 | stdbuf -o0 sed --unbuffered '/^$/d' |  awk -W interactive '{print "[lighttpd-wingbits]     " $0}' &
+
+# Start collectd.
+/usr/sbin/collectd 2>&1 | stdbuf -o0 sed --unbuffered '/^$/d' |  awk -W interactive '{print "[collectd-wingbits]     " $0}'
+
+# Start graphs1090 and put it in the background.
+/usr/share/graphs1090/service-graphs1090.sh 2>&1 | stdbuf -o0 sed --unbuffered '/^$/d' |  awk -W interactive '{print "[graphs1090-wingbits]     " $0}'&
+
+# Wait for any services to exit.
+wait -n
