@@ -268,18 +268,18 @@ services:
       - LAT=
       - LON=
     volumes:
-#      - tar1090:/var/globe_history
-#      - tar1090:/var/timelapse1090
+      - tar1090:/var/globe_history
+      - tar1090:/var/timelapse1090
       - tar1090:/var/lib/collectd
       - tar1090:/var/lib/collectd/rrd
-#      - tar1090:/proc/diskstats:ro
-#      - tar1090:/var/log
+      - tar1090:/var/log
     ports:
       - "8078:80"
       - "8542:8542"
       - "8504:8504"
     labels:
       io.balena.features.supervisor-api: '1'
+      io.balena.features.procfs: '1'
 # Optional: Uncomment to enable custom mlat server.
 #  mlat-client:
 #    depends_on:
