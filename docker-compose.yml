@@ -260,7 +260,7 @@ services:
     depends_on:
       - dump1090-fa
       - adsb-exchange
-    build: ./tar1090
+    image: ghcr.io/sdr-enthusiasts/docker-tar1090:latest
     restart: unless-stopped
     environment:
       - BEASTHOST=dump1090-fa
