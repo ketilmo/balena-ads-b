@@ -2,6 +2,7 @@ version: '2.4'
 volumes:
   settings:
   radarbox:
+  tar1090:
 services:
   kiosk:
     restart: unless-stopped
@@ -255,6 +256,30 @@ services:
     labels:
       io.balena.features.balena-api: '1'
       io.balena.features.supervisor-api: '1'
+  tar1090:
+    depends_on:
+      - dump1090-fa
+      - adsb-exchange
+    image: ghcr.io/sdr-enthusiasts/docker-tar1090:latest
+    restart: unless-stopped
+    environment:
+      - BEASTHOST=dump1090-fa
+      - MLATHOST=adsb-exchange
+      - LAT=
+      - LON=
+    volumes:
+      - tar1090:/var/globe_history
+      - tar1090:/var/timelapse1090
+      - tar1090:/var/lib/collectd
+      - tar1090:/var/lib/collectd/rrd
+      - tar1090:/var/log
+    ports:
+      - "8078:80"
+      - "8542:8542"
+      - "8504:8504"
+    labels:
+      io.balena.features.supervisor-api: '1'
+      io.balena.features.procfs: '1'
 # Optional: Uncomment to enable custom mlat server.
 #  mlat-client:
 #    depends_on:
@@ -270,6 +295,3 @@ services:
 #      - MLAT_SERVER=
 #    labels:
 #      io.balena.features.supervisor-api: '1'
-
-
-    
