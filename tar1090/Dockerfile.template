@@ -4,7 +4,7 @@ LABEL maintainer="https://github.com/ketilmo"
 ENV RECEIVER_HOST=dump1090-fa
 ENV RECEIVER_PORT=30005
 
-ARG PERM_INSTALL="curl gettext-base tini ncurses-dev zlib1g jq bash-builtins lighttpd" 
+ARG PERM_INSTALL="wget curl gettext-base tini ncurses-dev zlib1g jq bash-builtins lighttpd" 
 
 RUN apt update && \
 	apt install -y $PERM_INSTALL && \
