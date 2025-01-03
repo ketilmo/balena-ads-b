@@ -271,7 +271,7 @@ services:
       - tar1090:/var/globe_history
       - tar1090:/var/timelapse1090
       - tar1090:/var/lib/collectd
-      - tar1090:/var/lib/collect/rrd
+      - tar1090:/var/lib/collectd/rrd
       - tar1090:/proc/diskstats:ro
       - tar1090:/var/log
     ports:
