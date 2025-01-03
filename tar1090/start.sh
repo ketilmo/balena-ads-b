@@ -38,7 +38,7 @@ echo "Settings verified, proceeding with startup."
 echo " "
 
 # Start readsb and put in the background.
-/usr/bin/readsb --net --net-only --debug=n --quiet --net-connector localhost,30006,json_out --write-json /run/readsb --net-beast-reduce-interval 0.5 --net-heartbeat 60 --net-ro-size 1280 --net-ro-interval 0.2 --net-ro-port 0 --net-sbs-port 0 --net-bi-port 30154 --net-bo-port 0 --net-ri-port 0 --net-connector "$RECEIVER_HOST","$RECEIVER_PORT",beast_in
+/usr/bin/readsb --net --net-only --debug=n --quiet --json-reliable 1 --json-trace-interval 15 --write-json /run/readsb --write-state /var/globe_history --net-sbs-in-port 32006 --net-beast-reduce-out-port 30006 --net-json-port 30047 --net-beast-reduce-interval 0.5 --net-heartbeat 60 --net-ro-size 1280 --net-ro-interval 0.2 --net-ro-port 30002 --net-sbs-port 30003 --net-bi-port 30004,30104 --net-bo-port 30005 --net-ri-port 30001 --net-connector "$RECEIVER_HOST","$RECEIVER_PORT",beast_in
 
 # Start lighthttpd and put it in the background.
 /usr/sbin/lighttpd -D -f /etc/lighttpd/lighttpd.conf 2>&1 | stdbuf -o0 sed --unbuffered '/^$/d' |  awk -W interactive '{print "[lighttpd-wingbits]     " $0}' &
