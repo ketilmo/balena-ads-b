@@ -24,7 +24,7 @@ RUN apt update && \
 FROM base AS buildstep
 
 # renovate: datasource=github-tags depName=flightaware/dump1090 versioning=loose
-ARG DUMP1090_VERSION=v9.0
+ARG DUMP1090_VERSION=v10.0
 # renovate: datasource=github-tags depName=flightaware/beast-splitter versioning=loose
 ARG BEAST_SPLITTER_VERSION=v10.0
 ARG TEMP_INSTALL="git build-essential fakeroot cmake debhelper pkg-config libncurses5-dev libbladerf-dev libhackrf-dev liblimesuite-dev libusb-1.0-0-dev libsoapysdr-dev librtlsdr-dev apt-utils apt-transport-https debhelper"
