@@ -11,7 +11,7 @@ ENV UAT_RECEIVER_PORT 30978
 ENV RECEIVER_MLAT_PORT 30104
 ENV DUMP978_ENABLED=false
 
-ARG PERM_INSTALL="tini net-tools tclx8.4 tcllib itcl3 libboost-filesystem1.74.0 libboost-program-options1.74.0 libboost-regex1.74.0 libboost-system1.74.0 libexpat1 expect openssl" 
+ARG PERM_INSTALL="tini net-tools tclx8.4 tcllib itcl3 libboost-filesystem1.74.0 libboost-program-options1.74.0 libboost-regex1.74.0 libboost-system1.74.0 libexpat1 expect openssl rsyslog" 
 
 RUN apt update && \
 	apt install -y $PERM_INSTALL && \
@@ -21,7 +21,7 @@ RUN apt update && \
 FROM base AS buildstep
 
 # renovate: datasource=github-tags depName=flightaware/piaware_builder versioning=loose
-ARG PIAWARE_VERSION=v9.0.1
+ARG PIAWARE_VERSION=v10.0
 ARG TEMP_INSTALL="wget devscripts build-essential debhelper tcl8.6-dev autoconf python3-dev python3-venv python3-setuptools python3-wheel python3-build python3-pip patchelf debhelper libz-dev git libssl-dev tcl-dev chrpath libboost-system-dev libboost-program-options-dev libboost-regex-dev libboost-filesystem-dev" 
 
 RUN apt update && \
