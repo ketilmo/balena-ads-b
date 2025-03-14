@@ -1,0 +1,62 @@
+FROM balenalib/%%BALENA_ARCH%%-debian:bookworm AS base
+LABEL maintainer="https://github.com/ketilmo"
+
+EXPOSE 32088
+
+ENV AIRNAV_RADAR_KEY=
+ENV LAT=
+ENV LON=
+ENV ALT=
+ENV RECEIVER_HOST dump1090-fa
+ENV RECEIVER_PORT 30005
+
+ARG PERM_INSTALL="init-system-helpers dirmngr libcap2-bin tini gettext-base socat python3 python3-venv" 
+
+RUN apt update && \
+	apt install -y $PERM_INSTALL && \
+	apt clean && apt autoclean && apt autoremove && \
+	rm -rf /var/lib/apt/lists/*
+
+FROM base AS buildstep
+
+# renovate: datasource=git-refs depName=wiedehopf/mlat-client versioning=loose
+ARG MLAT_VERSION=0f95d5d9bb9d2a81e41651565beca2855cb4f1bd
+ARG TEMP_INSTALL="build-essential debhelper python3-dev git" 
+
+RUN apt update && \
+	apt install -y $TEMP_INSTALL
+
+WORKDIR /tmp
+
+RUN git clone --single-branch https://github.com/wiedehopf/mlat-client && \
+	cd mlat-client && \
+        git checkout ${MLAT_VERSION} && \
+    python3 -m venv /usr/local/share/mlat-client/venv/ && \	
+    /usr/local/share/mlat-client/venv/bin/python3 setup.py build && \	
+    /usr/local/share/mlat-client/venv/bin/python3 setup.py install
+
+FROM base AS release
+
+COPY start.sh /
+COPY airnavradar_installer.sh /tmp
+COPY rbfeeder.ini.tpl /etc
+COPY showkey.sh /
+
+WORKDIR /tmp
+
+RUN mkdir -p /usr/local/share/mlat-client/venv/
+COPY --from=buildstep /usr/local/share/mlat-client/venv/ /usr/local/share/mlat-client/venv/
+
+# Slight hack to make AirNav Radar work on i386 and amd64 architectures.
+RUN	mkdir -p /var/radarbox/thermal/thermal_zone0/ && \
+	rm -f /var/radarbox/thermal/thermal_zone0/temp &&  \
+	echo 24000 > /var/radarbox/thermal/thermal_zone0/temp && \
+	chmod +x /tmp/airnavradar_installer.sh && \
+	./airnavradar_installer.sh && \
+	chmod +x /start.sh && \
+	chmod +x /showkey.sh && \
+	rm -rf /tmp/*
+
+RUN mkdir -p /run/shm//
+
+ENTRYPOINT ["/start.sh"]

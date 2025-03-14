@@ -8,17 +8,17 @@ apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 1D043681
 /bin/rm -f /etc/apt/sources.list.d/rb24.list
 
 # Create a new debian repository source file
-echo 'deb https://apt.rb24.com/ bullseye main' > /etc/apt/sources.list.d/rb24.list
+echo 'deb https://apt.rb24.com/ bookworm main' > /etc/apt/sources.list.d/rb24.list
 
 arch="$(dpkg --print-architecture)"
 echo System Architecture: $arch
 
-# If host architecture is i386, amd64, or arm6 install armhf-version of RadarBox and run it through software emulation.
+# If host architecture is i386, amd64, or arm6 install armhf-version of AirNav Radar and run it through software emulation.
 if [ "$arch" = "i386" ] || [ "$arch" = "amd64" ]; then 
 	dpkg --add-architecture armhf
 		apt update  && apt install -y --no-install-recommends \
 	    rbfeeder:armhf qemu-user qemu-user-static binfmt-support libc6-armhf-cross
-# This elif is hopefully a temporary workaround, as the newest RadarBox library is not currently available for arm64.	    
+# This elif is hopefully a temporary workaround, as the newest AirNav Radar library is not currently available for arm64.	    
 elif [ "$arch" = "arm64" ]; then 
 	dpkg --add-architecture armhf
 		apt update  && apt install -y --no-install-recommends \

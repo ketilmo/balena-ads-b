@@ -1,7 +1,7 @@
 version: '2.4'
 volumes:
   settings:
-  radarbox:
+  airnav-radar:
   tar1090:
 services:
   kiosk:
@@ -197,23 +197,31 @@ services:
       - OPENSKY_SERIAL=
     labels:
       io.balena.features.supervisor-api: '1'
-  radarbox:
+  airnav-radar:
     depends_on:
       - dump1090-fa
-    build: ./radarbox
-    image: radarbox
+    build: ./airnav-radar
+    image: airnav-radar
     restart: unless-stopped
     expose:
       - "32088"
     environment:
-      - RADARBOX_KEY=
+      - AIRNAV_RADAR_KEY=
       - LAT=
       - LON=
       - ALT=
-#Slight hack to make RadarBox run on i386 and amd64 architectures.
     volumes:
-      - 'radarbox:/sys/class/thermal:ro'
-      - 'radarbox:/var/radarbox/thermal'
+      #Slight hack to make RadarBox run on i386 and amd64 architectures.
+      - 'airnav-radar:/sys/class/thermal:ro'
+      - 'airnav-radar:/var/radarbox/thermal'
+    labels:
+      io.balena.features.supervisor-api: '1'
+  radarbox:
+    build: ./radarbox
+    image: radarbox
+    restart: unless-stopped
+    environment:
+      - RADARBOX_KEY=
     labels:
       io.balena.features.supervisor-api: '1'
   adsb-exchange:

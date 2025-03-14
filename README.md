@@ -1,9 +1,9 @@
 
 ![balena ADS-B Flight Tracker](https://raw.githubusercontent.com/ketilmo/balena-ads-b/master/docs/images/header.svg)
 
-**ADS-B Flight Tracker running on balena with support for FlightAware, Flightradar24, Plane Finder, OpenSky Network, AirNav RadarBox, ADSB Exchange, Wingbits, adsb.fi, ADSB.lol, ADS-B One, airplanes.live, Planespotters.net, TheAirTraffic, AvDelphi, HP Radar, RadarPlane, Fly Italy ADSB and plane.watch.**
+**ADS-B Flight Tracker running on balena with support for FlightAware, Flightradar24, Plane Finder, OpenSky Network, AirNav Radar, ADSB Exchange, Wingbits, adsb.fi, ADSB.lol, ADS-B One, airplanes.live, Planespotters.net, TheAirTraffic, AvDelphi, HP Radar, RadarPlane, Fly Italy ADSB and plane.watch.**
 
-Contribute to the flight tracking community! Feed your local ADS-B data from an [RTL-SDR](https://www.rtl-sdr.com/) USB dongle (or various other radio types) and a supported device (see below) running balenaOS to the tracking services [FlightAware](https://flightaware.com/), [Flightradar24](https://www.flightradar24.com/), [Plane Finder](https://planefinder.net/), [OpenSky Network](https://opensky-network.org/), [AirNav RadarBox](https://www.radarbox.com/), [ADSB Exchange](https://adsbexchange.com), [Wingbits](https://wingbits.com), [adsb.fi](https://adsb.fi/), [ADSB.lol](https://adsb.lol/), [ADS-B One](https://adsb.one), [airplanes.live](https://airplanes.live/), [Planespotters.net](https://www.planespotters.net/), [TheAirTraffic](https://theairtraffic.com/), [AvDelphi](https://www.avdelphi.com/), [HP Radar](https://hpradar.com/), [RadarPlane](https://radarplane.com/), [Fly Italy ADSB](https://flyitalyadsb.com/) and [plane.watch](https://plane.watch/). In return, you can receive complimentary premium accounts (or cryptocurrency tokens) worth several hundred dollars annually!
+Contribute to the flight tracking community! Feed your local ADS-B data from an [RTL-SDR](https://www.rtl-sdr.com/) USB dongle (or various other radio types) and a supported device (see below) running balenaOS to the tracking services [FlightAware](https://flightaware.com/), [Flightradar24](https://www.flightradar24.com/), [Plane Finder](https://planefinder.net/), [OpenSky Network](https://opensky-network.org/), [AirNav Radar](https://www.airnavradar.com/), [ADSB Exchange](https://adsbexchange.com), [Wingbits](https://wingbits.com), [adsb.fi](https://adsb.fi/), [ADSB.lol](https://adsb.lol/), [ADS-B One](https://adsb.one), [airplanes.live](https://airplanes.live/), [Planespotters.net](https://www.planespotters.net/), [TheAirTraffic](https://theairtraffic.com/), [AvDelphi](https://www.avdelphi.com/), [HP Radar](https://hpradar.com/), [RadarPlane](https://radarplane.com/), [Fly Italy ADSB](https://flyitalyadsb.com/) and [plane.watch](https://plane.watch/). In return, you can receive complimentary premium accounts (or cryptocurrency tokens) worth several hundred dollars annually!
 
 # Stay in the loop
 
@@ -96,9 +96,9 @@ Software packages downloaded, installed, and configured by the balena-ads-b scri
 - [Part 6 – Configure OpenSky Network](#part-6--configure-opensky-network)
   * [Alternative A: Port an existing OpenSky Network receiver](#alternative-a-port-an-existing-opensky-network-receiver)
   * [Alternative B: Setup a new OpenSky Network receiver](#alternative-b-setup-a-new-opensky-network-receiver)
-- [Part 7 – Configure RadarBox](#part-7--configure-radarbox)
-  * [Alternative A: Port an existing RadarBox receiver](#alternative-a-port-an-existing-radarbox-receiver)
-  * [Alternative B: Setup a new RadarBox receiver](#alternative-b-setup-a-new-radarbox-receiver)
+- [Part 7 – Configure AirNav Radar](#part-7--configure-airnav-radar)
+  * [Alternative A: Port an existing AirNav Radar receiver](#alternative-a-port-an-existing-airnavn-radar-receiver)
+  * [Alternative B: Setup a new AirNav Radar receiver](#alternative-b-setup-a-new-airnav-radar-receiver)
 - [Part 8 – Configure ADSB Exchange and clones](#part-8--configure-adsb-exchange-and-clones)
   * [Enable ADSB Exchange](#enable-adsb-exchange)
   * [Enable ADSB Exchange Clones](#enable-adsb-exchange-clones)
@@ -124,10 +124,10 @@ Software packages downloaded, installed, and configured by the balena-ads-b scri
 
 # Part 1 – Build the receiver
 
-We'll build the receiver using the parts that are outlined on the Flightradar24, FlightAware, and RadarBox websites: 
+We'll build the receiver using the parts that are outlined on the Flightradar24, FlightAware, and AirNav Radar websites: 
 - https://www.flightradar24.com/build-your-own
-- https://flightaware.com/adsb/piaware/build
-- https://www.radarbox.com/raspberry-pi
+- https://www.flightaware.com/adsb/piaware/build
+- https://www.airnavradar.com/raspberry-pi
 
 These sites suggest the Raspberry Pi 3 Model B+ as the preferred device. Still, this project runs on all the devices mentioned above. Suppose you are buying a new appliance specifically for this project. In that case, we suggest the **Raspberry Pi 4 Model B** with as much memory as possible. It's excellent value for money.
 
@@ -294,27 +294,30 @@ If you have not previously set up an OpenSky Network receiver that you want to r
  9. Go back to your device's *Summary* page. Restart the *opensky-network* service under *Services* by clicking the “cycle” icon next to the service name.
  10. Head over to your OpenSky Network *[Dashboard](https://opensky-network.org/my-opensky)* and verify that your receiver shows up and feeds data.
 
-# Part 7 – Configure RadarBox
+# Part 7 – Configure AirNav Radar
 
-## Alternative A: Port an existing RadarBox receiver
-If you have previously set up a RadarBox receiver and want to port it to Balena, you only have to do the following steps:
+## Alternative A: Port an existing AirNav Radar receiver
+If you have previously set up a AirNav Radar receiver and want to port it to Balena, you only have to do the following steps:
 
- 1. Head back to the Balena dashboard and your device's page. Click on the *Device Variables*-button. Add a variable named `RADARBOX_KEY` and paste the value of your existing RadarBox key, e.g. `546b69e69b4671a742b82b10c674cdc1`. To get your key, issue the following command at your current RadarBox device: `sudo rbfeeder --showkey --no-start`.
- 2. Restart the *radarbox* service under *Services* by clicking the "cycle" icon next to the service name.
+ 1. Head back to the Balena dashboard and your device's page. Click on the *Device Variables*-button.
+ 2. Add a variable named `AIRNAV_RADAR_KEY` for the service `airnav-radar`, and paste the value of your existing AirNav Radar key, e.g. `546b69e69b4671a742b82b10c674cdc1`. 
+ 3. Click the button *Apply all changes* to activate the changes. The *airnav-radar* service will automatically restart to load the new settings.
+ 4. Optional: If you need to get your key, issue the following command at your current AirNav Radar device: `sudo rbfeeder --showkey --no-start`.
 
-## Alternative B: Setup a new RadarBox receiver
-If you have not previously set up a RadarBox receiver that you want to reuse, do the following steps:
 
- 1. Register a new [RadarBox account](https://www.radarbox.com/register). Make sure to activate it using the email that's sent to you.
+## Alternative B: Setup a new AirNav Radar receiver
+If you have not previously set up a AirNav Radar receiver that you want to reuse, do the following steps:
+
+ 1. Register a new [AirNav Radar account](https://www.airnavradar.com/register/). Make sure to activate it using the email that's sent to you.
  2. Head back to your device's page on the balena dashboard.
- 3. Inside the *Terminal* section, click *Select a target*, then *radarbox*, and finally *Start terminal session*.
- 4. This will open a terminal which lets you interact directly with your RadarBox container.
- 5. At the prompt, enter `/showkey.sh`. Your RadarBox key will be displayed and look similar to this: `546b69e69b4671a742b82b10c674cdc1`.
- 6. Click on the *Device Variables*-button in the left-hand menu. Add a variable named `RADARBOX_KEY` and paste the value from step 5, e.g. `546b69e69b4671a742b82b10c674cdc1`.
- 7. Restart the *radarbox* service under *Services* by clicking the "cycle" icon next to the service name.
- 8. Head to RadarBox's [Claim Your Raspberry Pi](https://www.radarbox.com/raspberry-pi/claim) page. Locate the input field named *Sharing Key,* and paste the value from step 5, e.g. `546b69e69b4671a742b82b10c674cdc1`.
+ 3. Inside the *Terminal* section, click *Select a target*, then *airnav-radar*, and finally *Start terminal session*.
+ 4. This will open a terminal which lets you interact directly with your AirNav Radar container.
+ 5. At the prompt, enter `/showkey.sh`. Your AirNav Radar key will be displayed and look similar to this: `546b69e69b4671a742b82b10c674cdc1`.
+ 6. Click on the *Device Variables*-button. Add a variable named `AIRNAV_RADAR_KEY` for the service `airnav-radar`, and paste the key from step 5, e.g. `546b69e69b4671a742b82b10c674cdc1`. 
+ 7. Click the button *Apply all changes* to activate the changes. The *airnav-radar* service will automatically restart to load the new settings.
+ 8. Head to AirNav Radar's [Claim Your Raspberry Pi](https://www.airnavradar.com/raspberry-pi/claim) page. Locate the input field named *Sharing Key,* and paste the value from step 5, e.g. `546b69e69b4671a742b82b10c674cdc1`.
  9. You might be asked to enter your feeder's location and altitude *above the ground.* Enter the same values you entered earlier in the `LAT` and `LON` variables. When asked for the antenna's altitude, specify it in meters (or feet) *above the ground* – NOT above sea level, as done previously. If you are not asked to enter this information, you can do it manually by clicking the *Edit* link under your receiver's ID on the left-hand side of the screen. 
- 10. Finally, verify that RadarBox is receiving data from your receiver. You'll find your receiver by clicking on the *Account* menu at [radarbox.com](https://www.radarbox.com) under the *Stations* accordion. 
+ 10. Finally, verify that AirNav Radar is receiving data from your receiver. You'll find your receiver by clicking on the *Account* menu at [airnavradar.com](https://www.airnavradar.com) under the *Stations* accordion. 
 
 # Part 8 – Configure ADSB Exchange and clones
 
@@ -421,7 +424,7 @@ In the United States, aircraft can use either the ADS-B standard, which transmit
 13. Click on the *Device Variables*-button in the left-hand menu. Add a new variable named `DUMP978_DEVICE` and set its value to `00000978`.
 14. Shut down your device. When it's powered off, connect both RTL-SDR sticks.
 15. Click on the *Device Variables*-button in the left-hand menu. Delete the `DUMP978_IDLE` variable.
-16. Power on the device. You should now be feeding ADS-B and UAT data simultaneously to the services that support it (FlightAware, RadarBox and ADSB-Exchange).
+16. Power on the device. You should now be feeding ADS-B and UAT data simultaneously to the services that support it (FlightAware, AirNav Radar and ADSB-Exchange).
 
 **Manually set gain for UAT/dump978**
 
