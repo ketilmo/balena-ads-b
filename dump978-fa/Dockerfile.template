@@ -41,7 +41,7 @@ RUN git clone --branch master --depth 1 --single-branch https://github.com/osmoc
 
 RUN	git clone https://github.com/pothosware/SoapyRTLSDR.git && \
 	cd SoapyRTLSDR && \
-	git checkout tags/${SOAPYRTLSDR_VERSION} && \
+	git checkout ${SOAPYRTLSDR_VERSION} && \
 	mkdir build && cd build && cmake .. && make && make install && ldconfig && cd .. && \
 	dpkg-buildpackage -b && cd .. && \
 	dpkg -i soapysdr0.7*.deb soapysdr-module-rtlsdr_*.deb && \
