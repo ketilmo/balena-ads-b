@@ -18,8 +18,8 @@ FROM base AS buildstep
 
 # renovate: datasource=github-tags depName=osmocom/rtl-sdr versioning=loose
 ARG RTLSDR_VERSION=v2.0.2
-# renovate: datasource=github-tags depName=pothosware/SoapyRTLSDR versioning=loose
-ARG SOAPYRTLSDR_VERSION=soapy-rtl-sdr-0.3.3
+# renovate: datasource=git-refs depName=pothosware/SoapyRTLSDR versioning=loose
+ARG SOAPYRTLSDR_VERSION=f22516c17c494896b479d8115988a105ac366fbd
 # renovate: datasource=github-tags depName=flightaware/dump978 versioning=loose
 ARG DUMP978_VERSION=v9.0
 ARG TEMP_INSTALL="build-essential cmake git debhelper pkg-config libboost-system-dev libboost-regex-dev libusb-1.0-0-dev libboost-filesystem-dev libboost-program-options-dev debhelper libsoapysdr-dev"

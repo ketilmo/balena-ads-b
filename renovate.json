@@ -52,6 +52,14 @@
       "currentValueTemplate": "master",
       "packageNameTemplate": "https://github.com/wiedehopf/mlat-client",
       "datasourceTemplate": "git-refs"
+    },
+    {
+      "customType": "regex",
+      "fileMatch": ["(^|/)Dockerfile\\.[^/]*$"],
+      "matchStrings": ["SOAPYRTLSDR_VERSION=(?<currentDigest>.*?)\\n"],
+      "currentValueTemplate": "master",
+      "packageNameTemplate": "https://github.com/pothosware/SoapyRTLSDR",
+      "datasourceTemplate": "git-refs"
     }
   ],
   "customDatasources": {
