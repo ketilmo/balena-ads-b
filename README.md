@@ -41,7 +41,7 @@ Please [let us know](https://github.com/ketilmo/balena-ads-b/discussions/new) if
 
 # Supported radios
 
-This software defaults to using an RTL-SDR radio device. However, it is also compatible with Mode-S Beast, bladeRF, HackRF, LimeSDR, and SoapySDR. Below, you can find more information on configuring these device types in the [Using different radio device types](#using-different-radio-device-types) section.
+This software defaults to using an RTL-SDR radio device. However, it is also compatible with Mode-S Beast, Airspy, bladeRF, HackRF, LimeSDR, and SoapySDR. Below, you can find more information on configuring these device types in the [Using different radio device types](#using-different-radio-device-types) section.
 
 # Credits
 
@@ -55,6 +55,7 @@ The project was inspired by and has borrowed code from the following repos and f
  - https://github.com/mikenye/
  - [https://discussions.flightaware.com/](https://discussions.flightaware.com/t/howto-install-piaware-4-0-on-debian-10-amd64-ubuntu-20-amd64-kali-2020-amd64-on-pc/69753/3)
  - https://github.com/marcelstoer/docker-adsbexchange
+ - https://github.com/wiedehopf/airspy-conf
 
 Thanks to [compujuckel](https://github.com/compujuckel/), [Glenn Stewart](https://bitbucket.org/inodes/), [wercsy](https://github.com/wercsy/), [mikenye](https://github.com/mikenye/), [abcd567a](https://github.com/abcd567a) and [marcelstoer](https://github.com/marcelstoer) for sharing!
 
@@ -473,20 +474,27 @@ You can disable any of the balena-ads-b services by creating a *Device Variable*
 
 ## Using different radio device types
 
-With balena-ads-b you are able to use a variety of SDRs (software defined radios) and other devices such as the FPGA based Mode-S Beast. The default operating mode is to use an RTL-SDR over USB and no additional configuration is needed for this setup.
+With balena-ads-b you are able to use a variety of SDRs (software defined radios) and other devices such as the FPGA based Mode-S Beast and Airspy. The default operating mode is to use an RTL-SDR over USB and no additional configuration is needed for this setup.
 
-If you are using a Mode-S Beast, bladeRF, HackRF, LimeSDR or SoapySDR then you will need to configure this for the device to work as intended.
+If you are using a Mode-S Beast, Airspy, bladeRF, HackRF, LimeSDR or SoapySDR then you will need to configure this for the device to work as intended.
 
 In order to configure the particular device type you are using, you need to create a *Device Variable* named `RADIO_DEVICE_TYPE`. The possible values are below:
 
 - rtlsdr (this is the default and you do not need to configure this variable if you are using an RTL-SDR)
 - modesbeast
+- airspy
 - bladerf
 - hackrf
 - limesdr
 - soapysdr
 
 For example if you have a Mode-S Beast, you set the `RADIO_DEVICE_TYPE` variable to `modesbeast`. Remember to save the device variable settings after you have updated them. Your device should restart automatically once you configure this and the radio should now work.
+
+If you use Airspy and need to power active antennas or preamplifiers, you can enable bias tee by setting a Device Variable named `AIRSPY_ADSB_BIASTEE` to `true`.
+
+If you have multiple Airspy sticks connected to the same device, you can differentiate between them using their serial numbers. The serial number appears in the console logs when `dump1090-fa` starts up. Copy the serial number and set it as the value of a *Device Variable* named `AIRSPY_ADSB_SERIAL`.
+
+**Important:** If the serial number is in hexadecimal format, prefix it with `0x`, e.g., `0x00B512CD22524212`.
 
 ## Adaptive gain configuration
 The dump1090-fa service can be configured to adapt the tuner gain to changing conditions automatically. You can [read more about how this works](https://github.com/flightaware/dump1090/blob/master/README.adaptive-gain.md#default-settings) at FlightAware's website. 
