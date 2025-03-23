@@ -22,7 +22,7 @@ RUN apt update && \
 FROM base AS buildstep
 
 # renovate: datasource=github-tags depName=wiedehopf/readsb versioning=loose
-ARG READSB_VERSION=v3.14.1649
+ARG READSB_VERSION=v3.14.1651
 # renovate: datasource=git-refs depName=wiedehopf/mlat-client versioning=loose
 ARG MLAT_VERSION=0f95d5d9bb9d2a81e41651565beca2855cb4f1bd
 ARG TEMP_INSTALL="git build-essential debhelper libncurses5-dev zlib1g-dev python3-dev libzstd-dev pkg-config"
