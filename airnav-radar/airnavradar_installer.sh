@@ -18,11 +18,6 @@ if [ "$arch" = "i386" ] || [ "$arch" = "amd64" ]; then
 	dpkg --add-architecture armhf
 		apt update  && apt install -y --no-install-recommends \
 	    rbfeeder:armhf qemu-user qemu-user-static binfmt-support libc6-armhf-cross
-# This elif is hopefully a temporary workaround, as the newest AirNav Radar library is not currently available for arm64.	    
-elif [ "$arch" = "arm64" ]; then 
-	dpkg --add-architecture armhf
-		apt update  && apt install -y --no-install-recommends \
-	    rbfeeder:armhf
 else 
     apt update && apt install -y --no-install-recommends \
 	    rbfeeder
