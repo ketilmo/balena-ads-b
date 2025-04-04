@@ -24,7 +24,7 @@ FROM base AS buildstep
 # renovate: datasource=github-tags depName=wiedehopf/readsb versioning=loose
 ARG READSB_VERSION=v3.14.1656
 # renovate: datasource=git-refs depName=wiedehopf/mlat-client versioning=loose
-ARG MLAT_VERSION=2e1bdbafeaef2ba9a28a7d723d6b5f9dc5075101
+ARG MLAT_VERSION=a34e48d2c1e0f957bfd5e472283af06c6cc6ddfc
 ARG TEMP_INSTALL="git build-essential debhelper libncurses5-dev zlib1g-dev python3-dev libzstd-dev pkg-config"
 
 WORKDIR /tmp
