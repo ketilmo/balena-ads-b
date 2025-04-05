@@ -60,6 +60,14 @@
       "currentValueTemplate": "master",
       "packageNameTemplate": "https://github.com/pothosware/SoapyRTLSDR",
       "datasourceTemplate": "git-refs"
+    },
+    {
+      "customType": "regex",
+      "fileMatch": ["(^|/)Dockerfile\\.[^/]*$"],
+      "matchStrings": ["AIRSPY_VERSION=(?<currentDigest>.*?)\\n"],
+      "currentValueTemplate": "master",
+      "packageNameTemplate": "https://github.com/wiedehopf/airspy-conf",
+      "datasourceTemplate": "git-refs"
     }
   ],
   "customDatasources": {
