@@ -131,9 +131,9 @@ echo -E "${WINGBITS_DEVICE_ID}" > $WINGBITS_VERSION_PATH/device
 # If UAT is enabled through config, enable feeding of UAT data to Wingbits.
 # Create lists
 WINGBITS_NET_CONNECTOR=()
-WINGBITS_NET_CONNECTOR+=("--net-connector $RECEIVER_HOST,$RECEIVER_PORT,beast_in")
+WINGBITS_NET_CONNECTOR+=("--net-connector=$RECEIVER_HOST,$RECEIVER_PORT,beast_in")
 if [[ "$UAT_ENABLED" = "true" ]]; then
-    WINGBITS_NET_CONNECTOR+=("--net-connector dump978-fa,30978,raw_in")
+    WINGBITS_NET_CONNECTOR+=("--net-connector=dump978-fa,30978,raw_in")
 fi
 
 # Start readsb and wingbits feeder and put in the background.
