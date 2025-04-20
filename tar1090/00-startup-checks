@@ -49,3 +49,9 @@ echo " "
 
 # We use LON for longitude but docker-tar1090 uses LONG
 echo "$LON" > /var/run/s6/container_environment/LONG
+
+# Check if UAT enabled
+if [[ "$UAT_ENABLED" = "true" ]]; then
+    echo "yes" > /var/run/s6/container_environment/ENABLE_978
+    echo "http://dump978-fa/skyaware978" > /var/run/s6/container_environment/URL_978
+fi
