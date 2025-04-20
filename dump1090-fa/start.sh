@@ -125,7 +125,10 @@ then
         if [ -n "$AIRSPY_ADSB_GAIN" ]; then AIRSPY_ADSB_CMD+=" -g $AIRSPY_ADSB_GAIN"; fi
         if [ -n "$AIRSPY_ADSB_SAMPLE_RATE" ]; then AIRSPY_ADSB_CMD+=" -m $AIRSPY_ADSB_SAMPLE_RATE"; fi
         if [ "$AIRSPY_ADSB_BIASTEE" == "true" ]; then AIRSPY_ADSB_CMD+=" -b"; fi
-        if [ "$AIRSPY_ADSB_STATS" == "true" ]; then AIRSPY_ADSB_CMD+=" -S /run/airspy_adsb/stats.json"; fi
+        if [ "$AIRSPY_ADSB_STATS" == "true" ]; then 
+	  AIRSPY_ADSB_CMD+=" -S /run/airspy_adsb/stats.json"
+          ln -s /etc/lighttpd/conf-available/87-airspy.conf /etc/lighttpd/conf-enabled/87-airspy.conf
+	fi
         /usr/bin/airspy_adsb $AIRSPY_ADSB_CMD $AIRSPY_ADSB_OPTIONS 2>&1 | stdbuf -o0 sed --unbuffered '/^$/d' | awk -W interactive '{print "[airspy]            "  $0}' &
 fi
 

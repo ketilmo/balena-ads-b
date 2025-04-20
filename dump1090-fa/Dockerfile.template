@@ -96,7 +96,6 @@ RUN dpkg -i librtlsdr0_*.deb && \
 	chmod +x /add-serial-1090.sh && \
 	chmod +x /showstrongmessages.sh && \
 	chmod +x /usr/bin/airspy_adsb && \
-	chmod 644 /etc/lighttpd/conf-available/87-airspy.conf && \
-	ln -s /etc/lighttpd/conf-available/87-airspy.conf /etc/lighttpd/conf-enabled/87-airspy.conf
+	chmod 644 /etc/lighttpd/conf-available/87-airspy.conf
 
 ENTRYPOINT ["/usr/bin/tini", "--", "/start.sh"]
