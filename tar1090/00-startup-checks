@@ -49,3 +49,12 @@ echo " "
 
 # We use LON for longitude but docker-tar1090 uses LONG
 echo "$LON" > /var/run/s6/container_environment/LONG
+
+# Check if Airspy stats enabled
+radio_device_lower=$(echo "${RADIO_DEVICE_TYPE}" | tr '[:upper:]' '[:lower:]')
+if [[ "$AIRSPY_ADSB_STATS" = "true" ]] && [[ "$radio_device_lower" = "airspy" ]]; then
+    export ENABLE_AIRSPY=yes
+    echo -n "yes" > /var/run/s6/container_environment/ENABLE_AIRSPY
+    export URL_AIRSPY=http://dump1090-fa/airspy_adsb
+    echo -n "http://dump1090-fa/airspy_adsb" > /var/run/s6/container_environment/URL_AIRSPY
+fi
