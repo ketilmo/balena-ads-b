@@ -53,7 +53,7 @@ echo "$LON" > /var/run/s6/container_environment/LONG
 # Check if UAT enabled
 if [[ "$UAT_ENABLED" = "true" ]]; then
     export ENABLE_978=yes
-    echo "yes" > /var/run/s6/container_environment/ENABLE_978
+    echo -n "yes" > /var/run/s6/container_environment/ENABLE_978
     export URL_978=http://dump978-fa/skyaware978
-    echo "http://dump978-fa/skyaware978" > /var/run/s6/container_environment/URL_978
+    echo -n "http://dump978-fa/skyaware978" > /var/run/s6/container_environment/URL_978
 fi
