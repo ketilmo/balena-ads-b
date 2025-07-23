@@ -11,7 +11,7 @@ ENV ALT=
 ENV RECEIVER_HOST=dump1090-fa
 ENV RECEIVER_PORT=30005
 
-ARG PERM_INSTALL="curl socat gzip python3 python3-venv netcat-traditional dnsutils uuid-runtime zlib1g jq inotify-tools perl tini gettext-base"
+ARG PERM_INSTALL="curl socat gzip python3 python3-venv netcat-traditional dnsutils uuid-runtime zlib1g jq inotify-tools perl tini gettext-base libncurses6"
 
 RUN apt update && \
 	apt install -y $PERM_INSTALL && \
