@@ -1,5 +1,5 @@
 # Uses base image from sdr-enthusiasts
-FROM ghcr.io/sdr-enthusiasts/docker-tar1090:latest AS base
+FROM ghcr.io/sdr-enthusiasts/docker-tar1090:latest-build-1315 AS base
 LABEL maintainer="https://github.com/ketilmo"
 
 # Copy our start script into correct place to be at the beginning of s6 startup
