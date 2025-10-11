@@ -53,7 +53,6 @@ then
 	THE_AIR_TRAFFIC_ENABLE="true"
 	AV_DELPHI_ENABLE="true"
 	SKYFEED_HPRADAR_ENABLE="true"
-	RADARPLANE_ENABLE="true"
 	FLY_ITALY_ADSB_ENABLE="true"
 fi
 
@@ -68,7 +67,6 @@ then
 	THE_AIR_TRAFFIC_ENABLE="true"
 	AV_DELPHI_ENABLE="true"
 	SKYFEED_HPRADAR_ENABLE="true"
-	RADARPLANE_ENABLE="true"
 	FLY_ITALY_ADSB_ENABLE="true"
 fi
 
@@ -226,17 +224,6 @@ then
 	ADSB_NET_CONNECTOR+=("--net-connector=skyfeed.hpradar.com,30004,beast_reduce_plus_out")
      	MLAT_SERVER+=("--server=skyfeed.hpradar.com:31090")
       	# MLAT_SERVER+=("--results beast,listen,39005")
-fi
-if [ -z "$RADARPLANE_ENABLE" ]
-then
-	echo "RadarPlane disabled, skipping."
- else
-	echo "RadarPlane service enabled."
- 	adsb="true"
-  	mlat="true"
-	ADSB_NET_CONNECTOR+=("--net-connector=feed.radarplane.com,30001,beast_reduce_plus_out")
-     	MLAT_SERVER+=("--server=feed.radarplane.com:31090")
-      	# MLAT_SERVER+=("--results beast,listen,39006")
 fi
 if [ -z "$FLY_ITALY_ADSB_ENABLE" ]
 then
