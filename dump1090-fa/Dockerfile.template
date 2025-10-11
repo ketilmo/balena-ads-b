@@ -46,6 +46,7 @@ WORKDIR /tmp
 
 RUN git clone --branch master --depth 1 --single-branch https://github.com/osmocom/rtl-sdr.git && \
 	cd rtl-sdr && \
+	git fetch --tags && \
 	git checkout tags/${RTLSDR_VERSION} && \
 	mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release -DDETACH_KERNEL_DRIVER=ON -DINSTALL_UDEV_RULES=ON ../ && make && make install && ldconfig && cd .. && \
 	dpkg-buildpackage -b && cd .. && \
