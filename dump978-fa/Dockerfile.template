@@ -16,6 +16,8 @@ RUN apt update && \
 
 FROM base AS buildstep
 
+ENV DEB_DH_SHLIBDEPS_ARGS_ALL="--dpkg-shlibdeps-params=--ignore-missing-info"
+
 # renovate: datasource=github-tags depName=osmocom/rtl-sdr versioning=loose
 ARG RTLSDR_VERSION=v2.0.2
 # renovate: datasource=git-refs depName=pothosware/SoapyRTLSDR versioning=loose
