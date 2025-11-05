@@ -58,6 +58,7 @@ RUN git clone --branch master --depth 1 --single-branch https://github.com/osmoc
 RUN git clone https://github.com/flightaware/dump1090 && \
 	cd dump1090 && \
 	git checkout tags/${DUMP1090_VERSION} && \
+	export DEB_DH_SHLIBDEPS_ARGS_ALL=--dpkg-shlibdeps-params=--ignore-missing-info && \
 	dpkg-buildpackage -b --no-sign --build-profiles=custom,rtlsdr,bladerf,hackrf,limesdr,soapysdr
 
 WORKDIR /tmp
