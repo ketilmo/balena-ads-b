@@ -48,7 +48,7 @@ echo "Settings verified, proceeding with startup."
 echo " "
 
 # We use LON for longitude but docker-tar1090 uses LONG
-echo "$LON" > /var/run/s6/container_environment/LONG
+echo -n "$LON" > /var/run/s6/container_environment/LONG
 
 # Check if UAT enabled
 if [[ "$UAT_ENABLED" = "true" ]]; then
