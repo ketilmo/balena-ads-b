@@ -13,6 +13,12 @@ ENV DUMP1090_ADAPTIVE_MIN_GAIN=""
 ENV DUMP1090_ADAPTIVE_MAX_GAIN=""
 ENV DUMP1090_SLOW_CPU=""
 ENV REBOOT_DEVICE_ON_SERVICE_EXIT=""
+ENV AIRSPY_ADSB_SERIAL=""
+ENV AIRSPY_ADSB_BIASTEE="false"
+ENV AIRSPY_ADSB_OPTIONS="-v -t 90 -f 1 -e 4 -w 5 -P 8 -C 60 -E 20 -R rms -D 24,25,26,27,28,29,30,31"
+ENV AIRSPY_ADSB_GAIN="auto"
+ENV AIRSPY_ADSB_SAMPLE_RATE="12"
+ENV AIRSPY_ADSB_STATS="false"
 
 ARG PERM_INSTALL="tini lighttpd gettext-base libusb-1.0-0 libbladerf2 libhackrf0 liblimesuite22.09-1 libsoapysdr0.8 libncurses6 libboost-system-dev libboost-program-options-dev libboost-regex-dev"
 
@@ -26,10 +32,12 @@ FROM base AS buildstep
 # renovate: datasource=github-tags depName=osmocom/rtl-sdr versioning=loose
 ARG RTLSDR_VERSION=v2.0.2
 # renovate: datasource=github-tags depName=flightaware/dump1090 versioning=loose
-ARG DUMP1090_VERSION=v10.0.1
+ARG DUMP1090_VERSION=v10.2
 # renovate: datasource=github-tags depName=flightaware/beast-splitter versioning=loose
-ARG BEAST_SPLITTER_VERSION=v10.0.1
-ARG TEMP_INSTALL="git build-essential fakeroot cmake debhelper pkg-config libncurses5-dev libbladerf-dev libhackrf-dev liblimesuite-dev libusb-1.0-0-dev libsoapysdr-dev librtlsdr-dev apt-utils apt-transport-https debhelper"
+ARG BEAST_SPLITTER_VERSION=v10.2
+# renovate: datasource=git-refs depName=wiedehopf/airspy-conf versioning=loose
+ARG AIRSPY_VERSION=83c4b8bd6457226a6dcd23862630296642daa5de
+ARG TEMP_INSTALL="git build-essential fakeroot cmake debhelper pkg-config libncurses5-dev libbladerf-dev libhackrf-dev liblimesuite-dev libusb-1.0-0-dev libsoapysdr-dev librtlsdr-dev apt-utils apt-transport-https debhelper wget"
 
 RUN apt update && \
 	apt install -y $TEMP_INSTALL
@@ -38,8 +46,9 @@ WORKDIR /tmp
 
 RUN git clone --branch master --depth 1 --single-branch https://github.com/osmocom/rtl-sdr.git && \
 	cd rtl-sdr && \
+	git fetch --tags && \
 	git checkout tags/${RTLSDR_VERSION} && \
-	mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release -DDETACH_KERNEL_DRIVER=ON -DINSTALL_UDEV_RULES=ON ../ && make && make install && ldconfig && cd .. && \
+	mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release -DDETACH_KERNEL_DRIVER=ON -DINSTALL_UDEV_RULES=ON ../ && make && cd .. && \
 	dpkg-buildpackage -b && cd .. && \
 	dpkg -i librtlsdr0_*.deb && \
 	dpkg -i librtlsdr-dev_*.deb && \
@@ -58,28 +67,36 @@ RUN git clone https://github.com/flightaware/beast-splitter && \
 	git checkout tags/${BEAST_SPLITTER_VERSION} && \
 	dpkg-buildpackage -b --no-sign
 
+COPY airspy_adsb_installer.sh /tmp
+RUN chmod +x /tmp/airspy_adsb_installer.sh && /tmp/airspy_adsb_installer.sh
+
 FROM base AS release
 
 COPY --from=buildstep /tmp/librtlsdr0_*.deb /tmp/
 COPY --from=buildstep /tmp/rtl-sdr_*.deb /tmp/
 COPY --from=buildstep /tmp/dump1090-fa_*.deb /tmp/
 COPY --from=buildstep /tmp/beast-splitter_*.deb /tmp/
+COPY --from=buildstep /tmp/airspy_adsb /usr/bin/
 COPY start.sh /
 COPY add-serial-1090.sh /
 COPY showstrongmessages.sh /
+COPY 87-airspy.conf /etc/lighttpd/conf-available/
 
 WORKDIR /tmp
 
-RUN 	dpkg -i librtlsdr0_*.deb && \
+RUN dpkg -i librtlsdr0_*.deb && \
 	dpkg -i rtl-sdr_*.deb && \
 	apt-mark hold librtlsdr0 rtl-sdr && \
 	dpkg -i dump1090-fa_*.deb && \
-        ln -s /bin/udevadm /sbin/udevadm && \
-        dpkg -i beast-splitter_*.deb && \
+	ln -s /bin/udevadm /sbin/udevadm && \
+	dpkg -i beast-splitter_*.deb && \
 	rm -rf /tmp/* && \
 	mkdir -p /run/dump1090-fa && \
+	mkdir -p mkdir -p /run/airspy_adsb && \
 	chmod +x /start.sh && \
 	chmod +x /add-serial-1090.sh && \
-	chmod +x /showstrongmessages.sh
+	chmod +x /showstrongmessages.sh && \
+	chmod +x /usr/bin/airspy_adsb && \
+	chmod 644 /etc/lighttpd/conf-available/87-airspy.conf
 
 ENTRYPOINT ["/usr/bin/tini", "--", "/start.sh"]

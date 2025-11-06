@@ -1,0 +1,58 @@
+name: Mirror OpenSky package file
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  update-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          ref: 'master'
+
+      - name: Download Package File
+        run: aria2c -x 2 -o opensky-network/.Packages https://s3.opensky-network.org/website-public-repos/debian/dists/opensky/custom/binary-arm64/Packages
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: Update OpenSky Package file
+          committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+          author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+          base: master
+          branch: bot/update-opensky-package-file
+          delete-branch: true
+          title: Update OpenSky Package file
+          body: Update OpenSky Package file to the latest version.
+          add-paths: opensky-network/.Packages
+
+  keepalive-update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          ref: 'master'
+
+      - name: Update check time
+        run: echo $(date -u) > '.github/update-check-time.txt'
+        shell: bash
+
+      - name: Push latest check time
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          commit_message: Update latest version check time
+          branch: bot/keepalive-update-check
+          create_branch: true
+          push_options: '--force'
+          commit_user_name: github-actions[bot]
+          commit_user_email: 41898282+github-actions[bot]@users.noreply.github.com
+          commit_author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+          file_pattern: '.github/update-check-time.txt'
+  

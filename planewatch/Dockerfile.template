@@ -1,9 +1,28 @@
 FROM balenalib/%%BALENA_ARCH%%-debian-golang:bookworm AS buildstep
 LABEL maintainer="https://github.com/ketilmo"
 
+# Update go version
+ENV GO_VERSION 1.25.4
+
+ARG BALENA_ARCH=%%BALENA_ARCH%%
+
+# Detect architecture and set appropriate Go download URL
+RUN case $BALENA_ARCH in \
+        "amd64")  GOARCH=amd64; GOHASH="9fa5ffeda4170de60f67f3aa0f824e426421ba724c21e133c1e35d6159ca1bec" ;; \
+        "aarch64")  GOARCH=arm64; GOHASH="a68e86d4b72c2c2fecf7dfed667680b6c2a071221bbdb6913cf83ce3f80d9ff0" ;; \
+        "armv7hf") GOARCH=armv6l; GOHASH="ff86a6406310d840edb170f539a51a7efac0ac2b2f84527b1b2bf5935fc4ab6d" ;; \
+        *)        echo "Unsupported architecture: ${TARGETARCH}" && exit 1 ;; \
+    esac && \
+    rm -rf /usr/local/go && \
+    mkdir -p /usr/local/go && \
+    curl -SLO "https://storage.googleapis.com/golang/go${GO_VERSION}.linux-${GOARCH}.tar.gz" && \
+    echo "${GOHASH}  go${GO_VERSION}.linux-${GOARCH}.tar.gz" | sha256sum -c - && \
+    tar -xzf "go${GO_VERSION}.linux-${GOARCH}.tar.gz" -C /usr/local/go --strip-components=1 && \
+    rm -f go${GO_VERSION}.linux-${GOARCH}.tar.gz
+
 # specify plane.watch pw-feeder version
 # renovate: datasource=github-tags depName=plane-watch/pw-feeder versioning=loose
-ARG PLANEWATCH_VERSION=v0.0.4
+ARG PLANEWATCH_VERSION=v0.0.5
 
 # specify mlat-client version
 # renovate: datasource=github-tags depName=mutability/mlat-client versioning=loose

@@ -1,9 +1,9 @@
 
 ![balena ADS-B Flight Tracker](https://raw.githubusercontent.com/ketilmo/balena-ads-b/master/docs/images/header.svg)
 
-**ADS-B Flight Tracker running on balena with support for FlightAware, Flightradar24, Plane Finder, OpenSky Network, AirNav Radar, ADSB Exchange, Wingbits, adsb.fi, ADSB.lol, ADS-B One, airplanes.live, Planespotters.net, TheAirTraffic, AvDelphi, HP Radar, RadarPlane, Fly Italy ADSB and plane.watch.**
+**ADS-B Flight Tracker running on balena with support for FlightAware, Flightradar24, Plane Finder, OpenSky Network, AirNav Radar, ADSB Exchange, Wingbits, adsb.fi, ADSB.lol, ADS-B One, airplanes.live, Planespotters.net, TheAirTraffic, AvDelphi, HP Radar, Fly Italy ADSB and plane.watch.**
 
-Contribute to the flight tracking community! Feed your local ADS-B data from an [RTL-SDR](https://www.rtl-sdr.com/) USB dongle (or various other radio types) and a supported device (see below) running balenaOS to the tracking services [FlightAware](https://flightaware.com/), [Flightradar24](https://www.flightradar24.com/), [Plane Finder](https://planefinder.net/), [OpenSky Network](https://opensky-network.org/), [AirNav Radar](https://www.airnavradar.com/), [ADSB Exchange](https://adsbexchange.com), [Wingbits](https://wingbits.com), [adsb.fi](https://adsb.fi/), [ADSB.lol](https://adsb.lol/), [ADS-B One](https://adsb.one), [airplanes.live](https://airplanes.live/), [Planespotters.net](https://www.planespotters.net/), [TheAirTraffic](https://theairtraffic.com/), [AvDelphi](https://www.avdelphi.com/), [HP Radar](https://hpradar.com/), [RadarPlane](https://radarplane.com/), [Fly Italy ADSB](https://flyitalyadsb.com/) and [plane.watch](https://plane.watch/). In return, you can receive complimentary premium accounts (or cryptocurrency tokens) worth several hundred dollars annually!
+Contribute to the flight tracking community! Feed your local [ADS-B data](https://mode-s.org/1090mhz/content/ads-b/1-basics.html) from an [RTL-SDR](https://www.rtl-sdr.com/) USB dongle (or various other radio types) and a supported device (see below) running balenaOS to the tracking services [FlightAware](https://flightaware.com/), [Flightradar24](https://www.flightradar24.com/), [Plane Finder](https://planefinder.net/), [OpenSky Network](https://opensky-network.org/), [AirNav Radar](https://www.airnavradar.com/), [ADSB Exchange](https://adsbexchange.com), [Wingbits](https://wingbits.com), [adsb.fi](https://adsb.fi/), [ADSB.lol](https://adsb.lol/), [ADS-B One](https://adsb.one), [airplanes.live](https://airplanes.live/), [Planespotters.net](https://www.planespotters.net/), [TheAirTraffic](https://theairtraffic.com/), [AvDelphi](https://www.avdelphi.com/), [HP Radar](https://hpradar.com/), [Fly Italy ADSB](https://flyitalyadsb.com/) and [plane.watch](https://plane.watch/). In return, you can receive complimentary premium accounts (or cryptocurrency tokens) worth several hundred dollars annually!
 
 # Stay in the loop
 
@@ -41,7 +41,7 @@ Please [let us know](https://github.com/ketilmo/balena-ads-b/discussions/new) if
 
 # Supported radios
 
-This software defaults to using an RTL-SDR radio device. However, it is also compatible with Mode-S Beast, bladeRF, HackRF, LimeSDR, and SoapySDR. Below, you can find more information on configuring these device types in the [Using different radio device types](#using-different-radio-device-types) section.
+This software defaults to using an RTL-SDR radio device. However, it is also compatible with Mode-S Beast, Airspy, bladeRF, HackRF, LimeSDR, and SoapySDR. Below, you can find more information on configuring these device types in the [Using different radio device types](#using-different-radio-device-types) section.
 
 # Credits
 
@@ -55,6 +55,7 @@ The project was inspired by and has borrowed code from the following repos and f
  - https://github.com/mikenye/
  - [https://discussions.flightaware.com/](https://discussions.flightaware.com/t/howto-install-piaware-4-0-on-debian-10-amd64-ubuntu-20-amd64-kali-2020-amd64-on-pc/69753/3)
  - https://github.com/marcelstoer/docker-adsbexchange
+ - https://github.com/wiedehopf/airspy-conf
 
 Thanks to [compujuckel](https://github.com/compujuckel/), [Glenn Stewart](https://bitbucket.org/inodes/), [wercsy](https://github.com/wercsy/), [mikenye](https://github.com/mikenye/), [abcd567a](https://github.com/abcd567a) and [marcelstoer](https://github.com/marcelstoer) for sharing!
 
@@ -334,7 +335,7 @@ If you have not previously set up a AirNav Radar receiver that you want to reuse
 [Feeder Status](https://www.adsbexchange.com/myip/) page from a PC on the same network as the feeder. Verify that your feeder is shown as registered and that ADSB Exchange is receiving your feed and MLAT data. You can also verify your feeder's performance at the [ADSB Exchange Feeder Map](https://map.adsbexchange.com/mlat-map/) by searching for your site name.
 
 # Enable ADSB Exchange clones
-This project supports a number of ADSB Exchange clones that arose after the sale of ADSB Exchange. Currently there is support for [adsb.fi](https://adsb.fi/), [ADSB.lol](https://adsb.lol/), [ADS-B One](https://adsb.one/), [airplanes.live](https://airplanes.live/), [Planespotters.net](https://www.planespotters.net/), [TheAirTraffic](https://theairtraffic.com/), [AvDelphi](https://www.avdelphi.com/), [HP Radar](https://hpradar.com/), [RadarPlane](https://radarplane.com/) and [Fly Italy ADSB](https://flyitalyadsb.com/). If you would like any new services adding, please create a PR adding the new service or if you do not know how then please [open an issue](https://github.com/ketilmo/balena-ads-b/issues/new) with your request.
+This project supports a number of ADSB Exchange clones that arose after the sale of ADSB Exchange. Currently there is support for [adsb.fi](https://adsb.fi/), [ADSB.lol](https://adsb.lol/), [ADS-B One](https://adsb.one/), [airplanes.live](https://airplanes.live/), [Planespotters.net](https://www.planespotters.net/), [TheAirTraffic](https://theairtraffic.com/), [AvDelphi](https://www.avdelphi.com/), [HP Radar](https://hpradar.com/), and [Fly Italy ADSB](https://flyitalyadsb.com/). If you would like any new services adding, please create a PR adding the new service or if you do not know how then please [open an issue](https://github.com/ketilmo/balena-ads-b/issues/new) with your request.
 
 For these services, you currently do not need any login or API credentials so there is no need to make an account with them (although some of them do offer this) and no credentials to add in balenaCloud. However, you do have to selectively enable each service (or you can enable all of them, or all but ADSB Exchange).
 
@@ -356,7 +357,6 @@ To enable a single service, you would need to add a *Device Variable* with one o
 - `THE_AIR_TRAFFIC_ENABLE=true`
 - `AV_DELPHI_ENABLE=true`
 - `HPRADAR_ENABLE=true`
-- `RADARPLANE_ENABLE=true`
 - `FLY_ITALY_ADSB_ENABLE=true`
 
 Lastly, these services all require a UUID to be passed to identify devices in their system. If you have set an `ADSB_EXCHANGE_UUID` the same UUID will be used for all services. If you do not have ADSB Exchange enabled and the `ADSB_EXCHANGE_UUID` variable set, the system will automatically generate one for you. However, if you would like, you can also set a UUID manually using the *Device Variable* with name `UUID` and with a UUID as a value (e.g. 2ddf6698-ea34-4c39-bbce-a8c3ddaf9bbd). You can use an [online UUID generator](https://www.uuidgenerator.net/) to generate one should you want to.
@@ -473,20 +473,48 @@ You can disable any of the balena-ads-b services by creating a *Device Variable*
 
 ## Using different radio device types
 
-With balena-ads-b you are able to use a variety of SDRs (software defined radios) and other devices such as the FPGA based Mode-S Beast. The default operating mode is to use an RTL-SDR over USB and no additional configuration is needed for this setup.
+With balena-ads-b you are able to use a variety of SDRs (software defined radios) and other devices such as the FPGA based Mode-S Beast and Airspy. The default operating mode is to use an RTL-SDR over USB and no additional configuration is needed for this setup.
 
-If you are using a Mode-S Beast, bladeRF, HackRF, LimeSDR or SoapySDR then you will need to configure this for the device to work as intended.
+If you are using a Mode-S Beast, Airspy, bladeRF, HackRF, LimeSDR or SoapySDR then you will need to configure this for the device to work as intended.
 
 In order to configure the particular device type you are using, you need to create a *Device Variable* named `RADIO_DEVICE_TYPE`. The possible values are below:
 
-- rtlsdr (this is the default and you do not need to configure this variable if you are using an RTL-SDR)
-- modesbeast
-- bladerf
-- hackrf
-- limesdr
-- soapysdr
+- `rtlsdr` (this is the default and you do not need to configure this variable if you are using an RTL-SDR)
+- `modesbeast`
+- `airspy`
+- `bladerf`
+- `hackrf`
+- `limesdr`
+- `soapy`
 
 For example if you have a Mode-S Beast, you set the `RADIO_DEVICE_TYPE` variable to `modesbeast`. Remember to save the device variable settings after you have updated them. Your device should restart automatically once you configure this and the radio should now work.
+
+### Airspy Setup
+
+**Please Note:** If you are using an Airspy radio module, it is recommended to use a Raspberry Pi 4 or a device that is as (or more) powerful. Whilst Airspy will work with less powerful hardware, the performance will be degraded and you may need to tweak some of the default settings.
+
+If you use Airspy and need to power active antennas or preamplifiers, you can enable the bias tee by setting a *Device Variable* named `AIRSPY_ADSB_BIASTEE` to `true`.
+
+If you have multiple Airspy modules connected to the same device, you can differentiate between them using their serial numbers. The serial number appears in the console logs when `dump1090-fa` starts up. Copy the serial number and set it as the value of a *Device Variable* named `AIRSPY_ADSB_SERIAL`. You can do this multiple times, plugging a single Airspy in at a time, to the serials of additional devices - but make sure to write a label on each one so you know which is which!
+
+**Important:** If the serial number is in hexadecimal format, prefix it with `0x`, e.g., `0x00B512CD22524212`.
+
+There are some other *Device Variables* you can use as well:
+- `AIRSPY_ADSB_STATS` defaults to false, as it causes additional writes to the SD card. However, if you are using [graphs1090](#part-14--exploring-flight-traffic-locally-on-your-device) and would like to see additional Airspy specific graph output you can create a *Device Variable* and set its value to `true`.
+- `AIRSPY_ADSB_GAIN` has a default setting of `auto`. The auto setting works very well so it is not recommended to change it. However, if you have a specific reason to you can use a setting from 0 to 21.
+- `AIRSPY_ADSB_SAMPLE_RATE` has a default setting of 12. On the Airspy R2 you can also use 20 or 24 however these can be unstable so are not recommended unless you have a specific reason.
+- `AIRSPY_ADSB_OPTIONS` contains all of the rest of the settings which Airspy starts up with. The default value is set as `-v -t 90 -f 1 -e 4 -w 5 -P 8 -C 60 -E 20 -R rms -D 24,25,26,27,28,29,30,31` - for a full description of what these mean you can take a look at the [airspy-conf](https://github.com/wiedehopf/airspy-conf/blob/master/airspy_adsb.default) and [airspy_adsb](https://github.com/sdr-enthusiasts/airspy_adsb?tab=readme-ov-file#environment-variables) repositories which explain all of the settings. It is not recommended to change any of these unless you know why you are doing so.
+
+## RTL-SDR dongle with software enabled bias tee
+
+If you are using an [RTL-SDR blog dongle](https://www.rtl-sdr.com/tag/shop/) or any other dongle with software enabled bias tee capability you can enable the bias tee using a *Device Variable*. This is possible in both the `dump1090-fa` and `dump978-fa` containers and they can be controlled individually. 
+
+- The `dump1090-fa` container handles the main ADS-B feed at 1090 MHz. To enable the bias tee in this container, create a *Device Variable* named `RTL1090_BIASTEE_ENABLE` and set its value to `true`.
+- If you are also using the `dump978-fa` container to feed [UAT 978 MHz data](#part-11--configure-uat-optional-and-us-only), you can enable the bias tee in this container by creating a *Device Variable* with name `RTL978_BIASTEE_ENABLE` and setting its value to `true`.
+
+For both containers, the bias tee enable setting will respect the `DUMP1090_DEVICE` and `DUMP978_DEVICE` variables if they are set. This means that if you are using multiple radio modules (as described in the [UAT section](#part-11--configure-uat-optional-and-us-only)) and only want to enable the bias tee on one of them, this feature will always enable the bias tee on the correct device based on the serial number set in the *Device Variables* for that container.
+
+In order to turn the bias tee off, you should remove the corresponding *Device Variable* and then reboot your device from the *Actions* dropdown menu on the main device summary page.
 
 ## Adaptive gain configuration
 The dump1090-fa service can be configured to adapt the tuner gain to changing conditions automatically. You can [read more about how this works](https://github.com/flightaware/dump1090/blob/master/README.adaptive-gain.md#default-settings) at FlightAware's website. 

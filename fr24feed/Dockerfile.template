@@ -4,7 +4,7 @@ LABEL maintainer="https://github.com/ketilmo"
 EXPOSE 8754
 
 # renovate: datasource=custom.flightradar24 depName=fr24feed versioning=loose
-ENV FR24FEED_VERSION=1.0.48-0
+ENV FR24FEED_VERSION=1.0.54-0
 ENV FR24_KEY=
 ENV RECEIVER_HOST=dump1090-fa
 ENV RECEIVER_PORT=30005

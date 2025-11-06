@@ -16,4 +16,4 @@ fi
 
 opensky_packet="opensky-feeder_${OPENSKY_VERSION}_$opensky_arch.deb"
 
-wget -O /tmp/OpenSky.deb https://old.opensky-network.org/files/firmware/$opensky_packet
+wget -O /tmp/OpenSky.deb https://opensky-network.org/files/firmware/$opensky_packet

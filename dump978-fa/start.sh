@@ -6,7 +6,7 @@ set -e
 
 if [[ ",$(echo -e "${DISABLED_SERVICES}" | tr -d '[:space:]')," = *",$BALENA_SERVICE_NAME,"* ]] || [[ "$DUMP1090_IDLE" = "true" ]]; then
         echo "$BALENA_SERVICE_NAME is manually disabled. Sending request to stop the service:"
-        curl --retry 10 --retry-all-errors --header "Content-Type:application/json" "$BALENA_SUPERVISOR_ADDRESS/v2/applications/$BALENA_APP_ID/stop-service?apikey=$BALENA_SUPERVISOR_API_KEY" -d '{"serviceName": "'$BALENA_SERVICE_NAME'"}'
+        curl --fail --retry 86400 --retry-delay 1 --retry-all-errors --header "Content-Type:application/json" "$BALENA_SUPERVISOR_ADDRESS/v2/applications/$BALENA_APP_ID/stop-service?apikey=$BALENA_SUPERVISOR_API_KEY" -d '{"serviceName": "'$BALENA_SERVICE_NAME'"}'
         echo " "
         balena-idle
 fi
@@ -15,7 +15,7 @@ fi
 
 if ! [[ "$UAT_ENABLED" = "true" ]]; then
         echo "$BALENA_SERVICE_NAME is not enabled. Sending request to stop the service:"
-        curl --retry 10 --retry-all-errors --header "Content-Type:application/json" "$BALENA_SUPERVISOR_ADDRESS/v2/applications/$BALENA_APP_ID/stop-service?apikey=$BALENA_SUPERVISOR_API_KEY" -d '{"serviceName": "'$BALENA_SERVICE_NAME'"}'
+        curl --fail --retry 86400 --retry-delay 1 --retry-all-errors --header "Content-Type:application/json" "$BALENA_SUPERVISOR_ADDRESS/v2/applications/$BALENA_APP_ID/stop-service?apikey=$BALENA_SUPERVISOR_API_KEY" -d '{"serviceName": "'$BALENA_SERVICE_NAME'"}'
         echo " "
         balena-idle
 fi
@@ -59,6 +59,13 @@ else
  	balena-idle
 fi
 
+# rtl-sdr bias tee enable (this container only supports rtl-sdr so no need to check radio device type)
+if [ "$RTL978_BIASTEE_ENABLE" = "true" ]
+then
+	echo "Enabling rtl-sdr bias tee for device ${DUMP978_DEVICE:=0}"
+ 	rtl_biast -d "$DUMP978_DEVICE" -b 1
+fi
+
 # Check for gain value
 if [ -z "$DUMP978_GAIN" ]
 then
@@ -88,5 +95,5 @@ wait -n
 
 if [[ "$REBOOT_DEVICE_ON_SERVICE_EXIT" == "true" ]]; then
         echo "Service exited, rebooting the device..."
-        curl --retry 10 --retry-all-errors -X POST --header "Content-Type:application/json" "$BALENA_SUPERVISOR_ADDRESS/v1/reboot?apikey=$BALENA_SUPERVISOR_API_KEY"
+        curl --fail --retry 86400 --retry-delay 1 --retry-all-errors -X POST --header "Content-Type:application/json" "$BALENA_SUPERVISOR_ADDRESS/v1/reboot?apikey=$BALENA_SUPERVISOR_API_KEY"
 fi

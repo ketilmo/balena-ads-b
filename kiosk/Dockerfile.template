@@ -1,8 +1,11 @@
 # renovate: datasource=github-tags depName=balena-io-experimental/browser versioning=loose
-ARG BROWSER_VERSION=2.9.0
+ARG BROWSER_VERSION=2.11.0
 FROM bh.cr/balenalabs/browser-%%BALENA_ARCH%%/$BROWSER_VERSION AS base
 
-RUN install_packages cec-utils tini
+RUN apt-get update && apt-get install -y  --no-install-recommends \
+    cec-utils \
+    tini && \
+    rm -rf /var/cache/apt/archives/* /var/lib/apt/lists/*
 
 COPY start.sh /usr/src/app/start_custom.sh
 

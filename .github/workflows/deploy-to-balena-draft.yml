@@ -12,16 +12,20 @@ jobs:
   build:
     name: "Deploy-to-Balena-Draft"
     runs-on: "ubuntu-latest"
+    strategy:
+      fail-fast: false
+      matrix:
+        architecture: ["aarch64", "amd64", "armv7hf"] # Not supported, but valid: rpi, i386, i386-nlp
     steps:
       - name: Checkout PR branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           persist-credentials: false
 
-      - name: Deploy to Balena
+      - name: Build on Balena with ${{ matrix.architecture }} architecture
         uses: balena-io/deploy-to-balena-action@master
         with:
           balena_token: ${{ secrets.BALENA_DRAFT_API_KEY }}
-          fleet: ${{ vars.BALENA_DRAFT_FLEET }}
+          fleet: ${{ vars.BALENA_DRAFT_FLEET }}-${{ matrix.architecture }}
           multi_dockerignore: true

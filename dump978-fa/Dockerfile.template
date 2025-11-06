@@ -19,9 +19,9 @@ FROM base AS buildstep
 # renovate: datasource=github-tags depName=osmocom/rtl-sdr versioning=loose
 ARG RTLSDR_VERSION=v2.0.2
 # renovate: datasource=git-refs depName=pothosware/SoapyRTLSDR versioning=loose
-ARG SOAPYRTLSDR_VERSION=bb2d1511b957138051764c9193a3d6971e912b85
+ARG SOAPYRTLSDR_VERSION=b1f568d1b57cc973a1d2ee49be68d0d748d164e4
 # renovate: datasource=github-tags depName=flightaware/dump978 versioning=loose
-ARG DUMP978_VERSION=v10.0.1
+ARG DUMP978_VERSION=v10.2
 ARG TEMP_INSTALL="build-essential cmake git debhelper pkg-config libboost-system-dev libboost-regex-dev libusb-1.0-0-dev libboost-filesystem-dev libboost-program-options-dev debhelper libsoapysdr-dev"
 
 RUN apt update && \
@@ -31,8 +31,9 @@ WORKDIR /tmp
 
 RUN git clone --branch master --depth 1 --single-branch https://github.com/osmocom/rtl-sdr.git && \
 	cd rtl-sdr && \
+	git fetch --tags && \
 	git checkout tags/${RTLSDR_VERSION} && \
-	mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release -DDETACH_KERNEL_DRIVER=ON -DINSTALL_UDEV_RULES=ON ../ && make && make install && ldconfig && cd .. && \
+	mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release -DDETACH_KERNEL_DRIVER=ON -DINSTALL_UDEV_RULES=ON ../ && make && cd .. && \
 	dpkg-buildpackage -b && cd .. && \
 	dpkg -i librtlsdr0_*.deb && \
 	dpkg -i librtlsdr-dev_*.deb && \
@@ -42,7 +43,7 @@ RUN git clone --branch master --depth 1 --single-branch https://github.com/osmoc
 RUN	git clone https://github.com/pothosware/SoapyRTLSDR.git && \
 	cd SoapyRTLSDR && \
 	git checkout ${SOAPYRTLSDR_VERSION} && \
-	mkdir build && cd build && cmake .. && make && make install && ldconfig && cd .. && \
+	mkdir build && cd build && cmake .. && make && cd .. && \
 	dpkg-buildpackage -b && cd .. && \
 	dpkg -i soapysdr0.7*.deb soapysdr-module-rtlsdr_*.deb && \
 	apt-mark hold soapysdr-module-rtlsdr

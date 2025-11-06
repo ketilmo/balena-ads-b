@@ -1,0 +1,18 @@
+Package: opensky-feeder
+Source: openskyd
+Version: 2.1.7-1
+Architecture: arm64
+Maintainer: OpenSky Network <contact@opensky-network.org>
+Installed-Size: 89
+Depends: libc6 (>= 2.17), perl:any, debconf (>= 0.5) | debconf-2.0, init-system-helpers (>= 1.18~), adduser (>= 3.11)
+Conflicts: opensky-feeder-donated, opensky-feeder-kit
+Homepage: http://opensky-network.org
+Priority: optional
+Section: custom
+Filename: pool/custom/o/openskyd/opensky-feeder_2.1.7-1_arm64.deb
+Size: 26760
+SHA256: 71bb878e1f74be967b863979d64f56369b0fae6aa0094eb1a020d7c94d31458e
+SHA1: 8aa20fb4e5be11e6f2da7635abe718d4a2b1c13e
+MD5sum: 13b756df6763e05551145a917f5a6a7a
+Description: Feeds ADS-B frames received from dump1090 into the OpenSky Network
+

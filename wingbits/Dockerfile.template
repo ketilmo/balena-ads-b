@@ -9,10 +9,10 @@ ENV RECEIVER_HOST=dump1090-fa
 ENV RECEIVER_PORT=30005
 
 # renovate: datasource=custom.wingbits-version depName=wingbits-version versioning=loose
-ENV WINGBITS_CONFIG_VERSION=0.1.0
+ENV WINGBITS_CONFIG_VERSION=0.1.1
 # renovate: datasource=custom.wingbits-json depName=wingbits-json versioning=loose
-ENV WINGBITS_COMMIT_ID=164826c6
-ENV WINGBITS_DATE=2025-04-14T12:56:29.795159985Z
+ENV WINGBITS_COMMIT_ID=v1.6.0
+ENV WINGBITS_DATE=2025-11-06T10:40:54.901645554Z
 
 ARG PERM_INSTALL="curl gettext-base tini ncurses-dev zlib1g jq python3-pip python3-venv wget"
 
@@ -24,7 +24,7 @@ RUN apt update && \
 FROM base AS buildstep
 
 # renovate: datasource=github-tags depName=wiedehopf/readsb versioning=loose
-ARG READSB_VERSION=v3.14.1660
+ARG READSB_VERSION=v3.16.5
 ARG TEMP_INSTALL="git gcc make libusb-1.0-0-dev build-essential debhelper zlib1g-dev python3-dev libzstd-dev pkg-config"
 
 WORKDIR /tmp

@@ -12,9 +12,9 @@
   "customManagers": [
     {
       "customType": "regex",
-      "fileMatch": [
-        "(^|/)Dockerfile$",
-        "(^|/)Dockerfile\\.[^/]*$"
+      "managerFilePatterns": [
+        "/(^|/)Dockerfile$/",
+        "/(^|/)Dockerfile\\.[^/]*$/"
       ],
       "matchStrings": [
         "renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s(ARG|ENV) .*?_VERSION=(?<currentValue>.*)\\s"
@@ -23,7 +23,9 @@
     },
     {
       "customType": "regex",
-      "fileMatch": ["(^|/)Dockerfile\\.[^/]*$"],
+      "managerFilePatterns": [
+        "/(^|/)Dockerfile\\.[^/]*$/"
+      ],
       "matchStrings": [
         "WINGBITS_COMMIT_ID=(?<currentDigest>.*?)\\nENV WINGBITS_DATE=(?<currentValue>.*?)\\n"
       ],
@@ -33,32 +35,60 @@
     },
     {
       "customType": "regex",
-      "fileMatch": ["(^|/)Dockerfile\\.[^/]*$"],
-      "matchStrings": ["WINGBITS_CONFIG_VERSION=(?<currentValue>.*?)\\n"],
+      "managerFilePatterns": [
+        "/(^|/)Dockerfile\\.[^/]*$/"
+      ],
+      "matchStrings": [
+        "WINGBITS_CONFIG_VERSION=(?<currentValue>.*?)\\n"
+      ],
       "depNameTemplate": "wingbits-version",
       "datasourceTemplate": "custom.wingbits-version"
     },
     {
       "customType": "regex",
-      "fileMatch": ["(^|/)Dockerfile\\.[^/]*$"],
-      "matchStrings": ["OPENSKY_VERSION=(?<currentValue>.*?)\\n"],
+      "managerFilePatterns": [
+        "/(^|/)Dockerfile\\.[^/]*$/"
+      ],
+      "matchStrings": [
+        "OPENSKY_VERSION=(?<currentValue>.*?)\\n"
+      ],
       "depNameTemplate": "opensky",
       "datasourceTemplate": "custom.opensky"
     },
     {
       "customType": "regex",
-      "fileMatch": ["(^|/)Dockerfile\\.[^/]*$"],
-      "matchStrings": ["MLAT_VERSION=(?<currentDigest>.*?)\\n"],
+      "managerFilePatterns": [
+        "/(^|/)Dockerfile\\.[^/]*$/"
+      ],
+      "matchStrings": [
+        "MLAT_VERSION=(?<currentDigest>.*?)\\n"
+      ],
       "currentValueTemplate": "master",
       "packageNameTemplate": "https://github.com/wiedehopf/mlat-client",
       "datasourceTemplate": "git-refs"
     },
     {
       "customType": "regex",
-      "fileMatch": ["(^|/)Dockerfile\\.[^/]*$"],
-      "matchStrings": ["SOAPYRTLSDR_VERSION=(?<currentDigest>.*?)\\n"],
+      "managerFilePatterns": [
+        "/(^|/)Dockerfile\\.[^/]*$/"
+      ],
+      "matchStrings": [
+        "SOAPYRTLSDR_VERSION=(?<currentDigest>.*?)\\n"
+      ],
       "currentValueTemplate": "master",
       "packageNameTemplate": "https://github.com/pothosware/SoapyRTLSDR",
+      "datasourceTemplate": "git-refs"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/(^|/)Dockerfile\\.[^/]*$/"
+      ],
+      "matchStrings": [
+        "AIRSPY_VERSION=(?<currentDigest>.*?)\\n"
+      ],
+      "currentValueTemplate": "master",
+      "packageNameTemplate": "https://github.com/wiedehopf/airspy-conf",
       "datasourceTemplate": "git-refs"
     }
   ],
@@ -70,7 +100,7 @@
       ]
     },
     "opensky": {
-      "defaultRegistryUrlTemplate": "https://old.opensky-network.org/repos/debian/dists/opensky/custom/binary-amd64/Packages",
+      "defaultRegistryUrlTemplate": "https://raw.githubusercontent.com/ketilmo/balena-ads-b/refs/heads/master/opensky-network/.Packages",
       "transformTemplates": [
         "{ \"releases\": [{ \"version\": $trim($[0].releases.version.$match(/Version: ([^\\s]+)/).groups[0]) }] }"
       ],
@@ -92,8 +122,13 @@
   },
   "packageRules": [
     {
-      "matchDepNames": ["/^wingbits/"],
-      "matchDatasources": ["custom.wingbits-version", "custom.wingbits-json"],
+      "matchDepNames": [
+        "/^wingbits/"
+      ],
+      "matchDatasources": [
+        "custom.wingbits-version",
+        "custom.wingbits-json"
+      ],
       "groupName": "wingbits version to latest"
     }
   ],
