@@ -1,4 +1,4 @@
-FROM balenalib/%%BALENA_ARCH%%-debian:bullseye AS base
+FROM balenalib/%%BALENA_ARCH%%-debian:bookworm AS base
 LABEL maintainer="https://github.com/ketilmo"
 
 EXPOSE 30154 30157 31003 
@@ -11,9 +11,8 @@ ENV LON=
 ENV ALT=
 ENV RECEIVER_HOST=dump1090-fa
 ENV RECEIVER_PORT=30005
-ENV DUMP978_ENABLED=false
 
-ARG PERM_INSTALL="curl socat gzip python3 python3-venv netcat dnsutils uuid-runtime zlib1g jq inotify-tools perl tini gettext-base"
+ARG PERM_INSTALL="curl socat gzip python3 python3-venv netcat-traditional dnsutils uuid-runtime zlib1g jq inotify-tools perl tini gettext-base"
 
 RUN apt update && \
 	apt install -y $PERM_INSTALL && \
@@ -51,18 +50,7 @@ WORKDIR /tmp
 
 RUN git clone https://github.com/adsbxchange/adsbexchange-stats.git
 
-RUN git clone --depth 1 https://github.com/adsbxchange/adsbexchange-978 /usr/local/share/adsbexchange-978/git && \
-	cd /usr/local/share/adsbexchange-978/git
-
-WORKDIR /tmp
-
-RUN git clone --single-branch --depth 1 --branch master https://github.com/adsb-related-code/uat2esnt && \
-	cd uat2esnt && \
-	make -j3 uat2esnt
-
 FROM base AS release
-
-RUN mkdir -p /usr/local/share/adsbexchange-978/
 
 RUN mkdir -p /usr/local/share/adsbexchange/venv/
 COPY --from=buildstep /usr/local/share/adsbexchange/venv/ /usr/local/share/adsbexchange/venv/
@@ -71,8 +59,6 @@ COPY --from=buildstep /tmp/readsb/readsb /usr/bin/feed-adsbx
 COPY --from=buildstep /tmp/adsbexchange-stats/adsbexchange-showurl /usr/local/bin/adsbexchange-showurl
 COPY --from=buildstep /tmp/adsbexchange-stats/json-status /usr/local/share/adsbexchange-stats/
 COPY --from=buildstep /tmp/adsbexchange-stats/create-uuid.sh /usr/local/share/adsbexchange-stats/
-COPY --from=buildstep /tmp/uat2esnt/uat2esnt /usr/local/share/adsbexchange-978
-COPY convert.sh /usr/local/share/adsbexchange-978/
 COPY start.sh /
 COPY create-sitename.sh /
 COPY adsbx-uuid.tpl /boot/
@@ -82,14 +68,10 @@ WORKDIR /tmp
 RUN chmod +x /usr/local/bin/adsbexchange-showurl && \
 	chmod +x /usr/local/share/adsbexchange-stats/json-status && \
 	chmod +x /usr/local/share/adsbexchange-stats/create-uuid.sh && \
-	mkdir -p /run/dump978-fa && \
-	mkdir -p /run/skyaware978 && \
 	chmod +x /start.sh && \
-	chmod +x /usr/local/share/adsbexchange-978/convert.sh && \
 	chmod +x /create-sitename.sh && \
 	mkdir -p /run/adsbexchange-feed && \
 	mkdir -p /run/adsbexchange-stats && \
-	mkdir -p /run/adsbexchange-978 && \
 	rm -rf /tmp/*
 
 ENTRYPOINT ["/usr/bin/tini", "--", "/start.sh"]
