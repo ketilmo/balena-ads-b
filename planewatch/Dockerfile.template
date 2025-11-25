@@ -22,7 +22,7 @@ RUN case $BALENA_ARCH in \
 
 # specify plane.watch pw-feeder version
 # renovate: datasource=github-tags depName=plane-watch/pw-feeder versioning=loose
-ARG PLANEWATCH_VERSION=v0.0.5
+ARG PLANEWATCH_VERSION=v0.0.6
 
 # specify mlat-client version
 # renovate: datasource=github-tags depName=mutability/mlat-client versioning=loose
