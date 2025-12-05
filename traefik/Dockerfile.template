@@ -13,7 +13,7 @@ RUN apt update && \
 FROM base AS buildstep
 
 # renovate: datasource=github-releases depName=traefik/traefik versioning=semver
-ARG TRAEFIK_VERSION=3.6.2
+ARG TRAEFIK_VERSION=3.6.4
 ARG TEMP_INSTALL="wget"
 
 COPY traefik_installer.sh /tmp
