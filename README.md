@@ -29,8 +29,7 @@ Contribute to the flight tracking community! Feed your local [ADS-B data](https:
 |                                                                                                                        | Device                          |
 |------------------------------------------------------------------------------------------------------------------------|---------------------------------|
 | <img alt="Intel NUC" height="24px" src="https://docs.balena.io/img/device/intel-nuc.svg"/>                             | Intel NUC                       |
-| <img alt="Nvidia Jetson Nano SD-CARD" height="24px" src="https://docs.balena.io/img/device/jetson-nano.svg"/>          | Nvidia Jetson Nano SD-CARD      |
-| <img alt="Orange Pi Zero" height="24px" src="https://docs.balena.io/img/device/orange-pi-zero.svg"/>                   | Orange Pi Zero                  |
+| <img alt="Nvidia Jetson Nano SD-CARD" height="24px" src="https://docs.balena.io/img/device/jetson-nano.svg"/>          | NVIDIA Jetson Nano (SD Card)    |
 | <img alt="Raspberry Pi 3 Model B+" height="24px" src="https://docs.balena.io/img/device/raspberrypi3.svg"/>            | Raspberry Pi 3 Model B+         |
 | <img alt="Raspberry Pi 3 (using 64bit OS)" height="24px" src="https://docs.balena.io/img/device/raspberrypi3-64.svg"/> | Raspberry Pi 3 (using 64bit OS) |
 | <img alt="Raspberry Pi 4 (using 64bit OS)" height="24px" src="https://docs.balena.io/img/device/raspberrypi4-64.svg"/> | Raspberry Pi 4 (using 64bit OS) |
