@@ -15,7 +15,7 @@ RUN case $BALENA_ARCH in \
     esac && \
     rm -rf /usr/local/go && \
     mkdir -p /usr/local/go && \
-    curl -SLO "https://storage.googleapis.com/golang/go${GO_VERSION}.linux-${GOARCH}.tar.gz" && \
+    curl -SLO "https://go.dev/dl/go${GO_VERSION}.linux-${GOARCH}.tar.gz" && \
     echo "${GOHASH}  go${GO_VERSION}.linux-${GOARCH}.tar.gz" | sha256sum -c - && \
     tar -xzf "go${GO_VERSION}.linux-${GOARCH}.tar.gz" -C /usr/local/go --strip-components=1 && \
     rm -f go${GO_VERSION}.linux-${GOARCH}.tar.gz
