@@ -137,7 +137,7 @@ if [[ "$UAT_ENABLED" = "true" ]]; then
 fi
 
 # Start readsb and wingbits feeder and put in the background.
-/usr/bin/feed-wingbits --net --net-only --debug=n --quiet --net-connector localhost,30006,json_out --write-json /run/wingbits-feed --net-beast-reduce-interval 0.5 --net-heartbeat 60 --net-ro-size 1280 --net-ro-interval 0.2 --net-ro-port 0 --net-sbs-port 0 --net-bi-port 30154 --net-bo-port 0 --net-ri-port 0 "${WINGBITS_NET_CONNECTOR[@]}" 2>&1 | stdbuf -o0 sed --unbuffered '/^$/d' |  awk -W interactive '{print "[readsb-wingbits]     " $0}' &
+/usr/bin/feed-wingbits --net --net-only --debug=n --quiet --net-connector localhost,30006,json_out --net-connector localhost,30015,beast_reduce_out --write-json /run/wingbits-feed --net-beast-reduce-interval 0.5 --net-beast-reduce-optimize-for-mlat --net-heartbeat 60 --net-ro-size 1280 --net-ro-interval 0.2 --net-ro-port 0 --net-sbs-port 0 --net-bi-port 30154 --net-bo-port 0 --net-ri-port 0 "${WINGBITS_NET_CONNECTOR[@]}" 2>&1 | stdbuf -o0 sed --unbuffered '/^$/d' |  awk -W interactive '{print "[readsb-wingbits]     " $0}' &
 wingbits feeder start 2>&1 | stdbuf -o0 sed --unbuffered '/^$/d' |  awk -W interactive '{print "[wingbits-feeder]     " $0}' &
 
 # Wait for any services to exit.
