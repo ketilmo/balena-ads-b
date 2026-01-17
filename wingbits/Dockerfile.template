@@ -24,7 +24,7 @@ RUN apt update && \
 FROM base AS buildstep
 
 # renovate: datasource=github-tags depName=wiedehopf/readsb versioning=loose
-ARG READSB_VERSION=v3.16.8
+ARG READSB_VERSION=v3.16.9
 ARG TEMP_INSTALL="git gcc make libusb-1.0-0-dev build-essential debhelper zlib1g-dev python3-dev libzstd-dev pkg-config"
 
 WORKDIR /tmp
