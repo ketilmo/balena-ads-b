@@ -17,12 +17,12 @@ if [ "$arch" = "i386" ] || [ "$arch" = "amd64" ]; then
 fi
 
 # Refresh sources
-apt-get update
+apt update
 
 # --- PRE-INSTALL SYSTEMD ---
 # We install systemd explicitly first to ensure the real /usr/bin/systemctl is on disk.
 # This prevents race conditions or overwrites during the main install transaction.
-apt-get install -y --no-install-recommends systemd
+apt install -y --no-install-recommends systemd
 
 # --- MOCKING SYSTEMCTL ---
 # Divert /usr/bin/systemctl (moves the now-existing real binary to .real)
@@ -38,10 +38,10 @@ chmod +x /usr/bin/systemctl
 
 # --- INSTALL RBFEEDER ---
 if [ "$arch" = "i386" ] || [ "$arch" = "amd64" ]; then
-    apt-get install -y --no-install-recommends \
+    apt install -y --no-install-recommends \
        rbfeeder:armhf qemu-user qemu-user-static binfmt-support libc6-armhf-cross
 else
-    apt-get install -y --no-install-recommends \
+    apt install -y --no-install-recommends \
        rbfeeder
 fi
 
@@ -54,5 +54,5 @@ if dpkg-divert --list | grep -q "/usr/bin/systemctl"; then
 fi
 
 # Cleanup
-apt-get clean && apt-get autoclean && apt-get autoremove && \
+apt clean && apt autoclean && apt autoremove && \
  rm -rf /var/lib/apt/lists/*
