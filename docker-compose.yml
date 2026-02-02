@@ -197,25 +197,25 @@ services:
       - OPENSKY_SERIAL=
     labels:
       io.balena.features.supervisor-api: '1'
-  airnav-radar:
-    depends_on:
-      - dump1090-fa
-    build: ./airnav-radar
-    image: airnav-radar
-    restart: unless-stopped
-    expose:
-      - "32088"
-    environment:
-      - AIRNAV_RADAR_KEY=
-      - LAT=
-      - LON=
-      - ALT=
-    volumes:
-      #Slight hack to make AirNav Radar run on i386 and amd64 architectures.
-      - 'airnav-radar:/sys/class/thermal:ro'
-      - 'airnav-radar:/var/radarbox/thermal'
-    labels:
-      io.balena.features.supervisor-api: '1'
+#  airnav-radar:
+#    depends_on:
+#      - dump1090-fa
+#    build: ./airnav-radar
+#    image: airnav-radar
+#    restart: unless-stopped
+#    expose:
+#      - "32088"
+#    environment:
+#      - AIRNAV_RADAR_KEY=
+#      - LAT=
+#      - LON=
+#      - ALT=
+#    volumes:
+#      #Slight hack to make AirNav Radar run on i386 and amd64 architectures.
+#      - 'airnav-radar:/sys/class/thermal:ro'
+#      - 'airnav-radar:/var/radarbox/thermal'
+#    labels:
+#      io.balena.features.supervisor-api: '1'
   adsb-exchange:
     depends_on:
       - dump1090-fa
