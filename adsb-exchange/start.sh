@@ -278,6 +278,11 @@ echo " "
 
 # Variables are verified – continue with startup procedure.
 
+# If UAT is enabled through config, enable feeding of UAT data to ADSB Exchange and others.
+if [[ "$UAT_ENABLED" = "true" ]]; then
+    ADSB_NET_CONNECTOR+=("--net-connector=dump978-fa,30978,uat_in")
+fi
+
 if [ "$adsb" = "true" ]
 then
 	/usr/bin/feed-adsbx --net --net-only --debug=$ADSB_EXCHANGE_DEBUG --quiet --uuid-file="${UUID_FILE}" --write-json /run/adsbexchange-feed "${ADSB_NET_CONNECTOR[@]}" --net-beast-reduce-interval 0.5 --net-heartbeat 60 --net-ro-size 1280 --net-ro-interval 0.2 --net-ro-port 0 --net-sbs-port 0 --net-bi-port 30154 --net-bo-port 0 --net-ri-port 0 --net-connector "$RECEIVER_HOST","$RECEIVER_PORT",beast_in --lat "$LAT" --lon "$LON" 2>&1 | stdbuf -o0 sed --unbuffered '/^$/d' |  awk -W interactive '{print "[feed-adsbx]     " $0}' &
@@ -300,12 +305,6 @@ then
 	echo "Feeder page: https://www.adsbexchange.com/api/feeders/?feed=$(cat /boot/adsbx-uuid)"
 	echo " "
 	/usr/local/share/adsbexchange-stats/json-status 2>&1 | stdbuf -o0 sed --unbuffered '/^$/d' | awk -W interactive '{print "[json-status]    " $0}' | grep -v 'jq: error' &
-fi
-
-# If UAT is enabled through config, enable feeding of UAT data to ADSB Exchange.
-if [[ "$UAT_ENABLED" = "true" ]] && [ "$adsb_exchange" = "true" ]; then
-	/usr/bin/feed-adsbx --net-only --net --net-heartbeat 60 --net-ro-size 1280 --net-ro-interval 0.2 --net-ri-port 37981 --net-bo-port 37985 --net-connector feed.adsbexchange.com,30004,beast_reduce_out,feed.adsbexchange.com,64004 --write-json /run/adsbexchange-978 --quiet 2>&1 | stdbuf -o0 sed --unbuffered '/^$/d' | awk -W interactive '{print "[feed-adsbx-uat] " $0}' &
-	/usr/local/share/adsbexchange-978/convert.sh 2>&1 | stdbuf -o0 sed --unbuffered '/^$/d' | awk -W interactive '{print "[uat2esnt]       " $0}' &
 fi
 
 # Wait for any services to exit.

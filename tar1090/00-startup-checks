@@ -50,6 +50,13 @@ echo " "
 # We use LON for longitude but docker-tar1090 uses LONG
 echo -n "$LON" > /var/run/s6/container_environment/LONG
 
+# Check if UAT enabled
+if [[ "$UAT_ENABLED" = "true" ]]; then
+    export ENABLE_978=yes
+    echo -n "yes" > /var/run/s6/container_environment/ENABLE_978
+    export URL_978=http://dump978-fa/skyaware978
+    echo -n "http://dump978-fa/skyaware978" > /var/run/s6/container_environment/URL_978
+
 # Check if Airspy stats enabled
 radio_device_lower=$(echo "${RADIO_DEVICE_TYPE}" | tr '[:upper:]' '[:lower:]')
 if [[ "$AIRSPY_ADSB_STATS" = "true" ]] && [[ "$radio_device_lower" = "airspy" ]]; then
