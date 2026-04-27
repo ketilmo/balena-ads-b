@@ -1,4 +1,4 @@
-FROM balenalib/%%BALENA_ARCH%%-debian:bookworm AS base
+FROM debian:bookworm-slim AS base
 LABEL maintainer="https://github.com/ketilmo"
 
 ENV OPENSKY_USERNAME=
@@ -10,7 +10,7 @@ ENV ALT=
 ENV RECEIVER_HOST=dump1090-fa
 ENV RECEIVER_PORT=30005
 
-ARG PERM_INSTALL="perl gettext-base tini expect" 
+ARG PERM_INSTALL="perl gettext-base tini expect ca-certificates curl"
 
 RUN apt update && \
 	apt install -y $PERM_INSTALL && \

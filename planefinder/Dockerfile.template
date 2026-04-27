@@ -1,4 +1,4 @@
-FROM balenalib/%%BALENA_ARCH%%-debian:bullseye AS base
+FROM debian:bullseye-slim AS base
 LABEL maintainer="https://github.com/ketilmo"
 
 EXPOSE 30053
@@ -10,7 +10,7 @@ ENV GOOGLE_MAPS_API_KEY=
 ENV RECEIVER_HOST=dump1090-fa
 ENV RECEIVER_PORT=30005
 
-ARG PERM_INSTALL="gettext-base wget tini" 
+ARG PERM_INSTALL="gettext-base wget tini ca-certificates curl"
 
 RUN apt update && \
 	apt install -y $PERM_INSTALL && \

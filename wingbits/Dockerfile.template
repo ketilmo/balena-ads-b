@@ -1,4 +1,4 @@
-FROM balenalib/%%BALENA_ARCH%%-debian:bookworm AS base
+FROM debian:bookworm-slim AS base
 LABEL maintainer="https://github.com/ketilmo"
 
 EXPOSE 30154
@@ -14,7 +14,7 @@ ENV WINGBITS_CONFIG_VERSION=0.2.1
 ENV WINGBITS_COMMIT_ID=v1.10.25
 ENV WINGBITS_DATE=2026-04-28T10:50:44.608968853Z
 
-ARG PERM_INSTALL="curl gettext-base tini ncurses-dev zlib1g jq python3-pip python3-venv wget"
+ARG PERM_INSTALL="curl ca-certificates gettext-base tini ncurses-dev zlib1g jq python3-pip python3-venv wget"
 
 RUN apt update && \
 	apt install -y $PERM_INSTALL && \

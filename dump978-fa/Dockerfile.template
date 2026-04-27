@@ -1,4 +1,4 @@
-FROM balenalib/%%BALENA_ARCH%%-debian:bookworm AS base
+FROM debian:bookworm-slim AS base
 LABEL maintainer="https://github.com/ketilmo"
 
 EXPOSE 30978 30979 8978
@@ -7,7 +7,7 @@ ENV DUMP978_DEVICE=00000978
 ENV DUMP978_ENABLED=false
 ENV REBOOT_DEVICE_ON_SERVICE_EXIT=""
 
-ARG PERM_INSTALL="tini libboost-program-options-dev libusb-1.0-0 lighttpd swig gettext-base libboost-filesystem1.74.0 libboost-regex1.74.0 libboost-system1.74.0 libsoapysdr0.8"
+ARG PERM_INSTALL="tini ca-certificates curl libboost-program-options-dev libusb-1.0-0 lighttpd swig gettext-base libboost-filesystem1.74.0 libboost-regex1.74.0 libboost-system1.74.0 libsoapysdr0.8"
 
 RUN apt update && \
 	apt install -y $PERM_INSTALL && \

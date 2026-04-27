@@ -1,4 +1,4 @@
-FROM balenalib/%%BALENA_ARCH%%-debian:bookworm AS base
+FROM debian:bookworm-slim AS base
 LABEL maintainer="https://github.com/ketilmo"
 
 EXPOSE 30001 30002 30003 30004 30005 30102 30104 30105 30106 8080
@@ -20,7 +20,7 @@ ENV AIRSPY_ADSB_GAIN="auto"
 ENV AIRSPY_ADSB_SAMPLE_RATE="12"
 ENV AIRSPY_ADSB_STATS="false"
 
-ARG PERM_INSTALL="tini lighttpd gettext-base libusb-1.0-0 libbladerf2 libhackrf0 liblimesuite22.09-1 libsoapysdr0.8 libncurses6 libboost-system-dev libboost-program-options-dev libboost-regex-dev"
+ARG PERM_INSTALL="tini ca-certificates curl lighttpd gettext-base libusb-1.0-0 libbladerf2 libhackrf0 liblimesuite22.09-1 libsoapysdr0.8 libncurses6 libboost-system-dev libboost-program-options-dev libboost-regex-dev"
 
 RUN apt update && \
 	apt install -y $PERM_INSTALL && \

@@ -1,24 +1,5 @@
-FROM balenalib/%%BALENA_ARCH%%-debian-golang:bookworm AS buildstep
+FROM golang:1.25.4-bookworm AS buildstep
 LABEL maintainer="https://github.com/ketilmo"
-
-# Update go version
-ENV GO_VERSION 1.25.4
-
-ARG BALENA_ARCH=%%BALENA_ARCH%%
-
-# Detect architecture and set appropriate Go download URL
-RUN case $BALENA_ARCH in \
-        "amd64")  GOARCH=amd64; GOHASH="9fa5ffeda4170de60f67f3aa0f824e426421ba724c21e133c1e35d6159ca1bec" ;; \
-        "aarch64")  GOARCH=arm64; GOHASH="a68e86d4b72c2c2fecf7dfed667680b6c2a071221bbdb6913cf83ce3f80d9ff0" ;; \
-        "armv7hf") GOARCH=armv6l; GOHASH="ff86a6406310d840edb170f539a51a7efac0ac2b2f84527b1b2bf5935fc4ab6d" ;; \
-        *)        echo "Unsupported architecture: ${TARGETARCH}" && exit 1 ;; \
-    esac && \
-    rm -rf /usr/local/go && \
-    mkdir -p /usr/local/go && \
-    curl -SLO "https://go.dev/dl/go${GO_VERSION}.linux-${GOARCH}.tar.gz" && \
-    echo "${GOHASH}  go${GO_VERSION}.linux-${GOARCH}.tar.gz" | sha256sum -c - && \
-    tar -xzf "go${GO_VERSION}.linux-${GOARCH}.tar.gz" -C /usr/local/go --strip-components=1 && \
-    rm -f go${GO_VERSION}.linux-${GOARCH}.tar.gz
 
 # specify plane.watch pw-feeder version
 # renovate: datasource=github-tags depName=plane-watch/pw-feeder versioning=loose
@@ -64,7 +45,7 @@ RUN curl -so lets-encrypt-e5.crt https://letsencrypt.org/certs/2024/e5.pem && \
     curl -so lets-encrypt-r13.crt https://letsencrypt.org/certs/2024/r13.pem && \
     curl -so lets-encrypt-r14.crt https://letsencrypt.org/certs/2024/r14.pem
 
-FROM balenalib/%%BALENA_ARCH%%-debian:bookworm AS release
+FROM debian:bookworm-slim AS release
 
 ENV LAT=
 ENV LON=
@@ -77,7 +58,7 @@ ENV RECEIVER_PORT 30005
 EXPOSE 30105
 
 # install pre-requisite packages
-ARG PERM_INSTALL="python3 tini"
+ARG PERM_INSTALL="python3 tini ca-certificates curl"
 RUN apt update && \
 	apt install -y $PERM_INSTALL && \
 	apt clean && apt autoclean && apt autoremove && \

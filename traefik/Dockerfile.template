@@ -1,9 +1,9 @@
-FROM balenalib/%%BALENA_ARCH%%-debian:bookworm AS base
+FROM debian:bookworm-slim AS base
 LABEL maintainer="https://github.com/ketilmo"
 
 EXPOSE 80 8080 443
 
-ARG PERM_INSTALL="gettext-base tini" 
+ARG PERM_INSTALL="gettext-base tini ca-certificates curl"
 
 RUN apt update && \
 	apt install -y $PERM_INSTALL && \
