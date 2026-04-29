@@ -22,9 +22,9 @@ ENV AIRSPY_ADSB_STATS="false"
 
 ARG PERM_INSTALL="tini ca-certificates curl lighttpd gettext-base libusb-1.0-0 libbladerf2 libhackrf0 liblimesuite22.09-1 libsoapysdr0.8 libncurses6 libboost-system-dev libboost-program-options-dev libboost-regex-dev"
 
-RUN apt update && \
-	apt install -y $PERM_INSTALL && \
-	apt clean && apt autoclean && apt autoremove && \
+RUN apt-get update && \
+	apt-get install -y --no-install-recommends $PERM_INSTALL && \
+	apt-get clean && apt-get autoremove -y && \
 	rm -rf /var/lib/apt/lists/*
 
 FROM base AS buildstep
@@ -39,8 +39,8 @@ ARG BEAST_SPLITTER_VERSION=v10.2
 ARG AIRSPY_VERSION=7f07ea95311cceb7eb37cbaf965b65faae5551bd
 ARG TEMP_INSTALL="git build-essential fakeroot cmake debhelper pkg-config libncurses5-dev libbladerf-dev libhackrf-dev liblimesuite-dev libusb-1.0-0-dev libsoapysdr-dev librtlsdr-dev apt-utils apt-transport-https debhelper wget"
 
-RUN apt update && \
-	apt install -y $TEMP_INSTALL
+RUN apt-get update && \
+	apt-get install -y --no-install-recommends $TEMP_INSTALL
 
 WORKDIR /tmp
 

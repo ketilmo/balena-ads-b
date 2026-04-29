@@ -12,9 +12,9 @@ ENV RECEIVER_PORT=30005
 
 ARG PERM_INSTALL="gettext-base wget tini ca-certificates curl"
 
-RUN apt update && \
-	apt install -y $PERM_INSTALL && \
-	apt clean && apt autoclean && apt autoremove && \
+RUN apt-get update && \
+	apt-get install -y --no-install-recommends $PERM_INSTALL && \
+	apt-get clean && apt-get autoremove -y && \
 	rm -rf /var/lib/apt/lists/*
 
 FROM base AS buildstep

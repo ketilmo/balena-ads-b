@@ -12,8 +12,8 @@ ARG MLAT_CLIENT_VERSION=v0.2.13
 # install build step pre-requs
 ARG TEMP_INSTALL="python3-dev python3-venv"
 WORKDIR /tmp
-RUN apt update && \
-	apt install -y $TEMP_INSTALL
+RUN apt-get update && \
+	apt-get install -y --no-install-recommends $TEMP_INSTALL
 
 # build pw-feeder binary from source
 WORKDIR /tmp
@@ -59,9 +59,9 @@ EXPOSE 30105
 
 # install pre-requisite packages
 ARG PERM_INSTALL="python3 tini ca-certificates curl"
-RUN apt update && \
-	apt install -y $PERM_INSTALL && \
-	apt clean && apt autoclean && apt autoremove && \
+RUN apt-get update && \
+	apt-get install -y --no-install-recommends $PERM_INSTALL && \
+	apt-get clean && apt-get autoremove -y && \
 	rm -rf /var/lib/apt/lists/*
 
 # copy pw-feeder binary from buildstep
