@@ -54,5 +54,5 @@ if dpkg-divert --list | grep -q "/usr/bin/systemctl"; then
 fi
 
 # Cleanup
-apt clean && apt autoclean && apt autoremove && \
+apt-get clean && apt-get autoremove -y && \
  rm -rf /var/lib/apt/lists/*

@@ -28,6 +28,6 @@ wget -O PlaneFinder.deb http://client.planefinder.net/$planefinder_packet
 dpkg -i PlaneFinder.deb
 rm -rf PlaneFinder.deb
 
-apt purge wget && \
-	apt clean && apt autoclean && apt autoremove && \
+apt-get purge -y wget && \
+	apt-get clean && apt-get autoremove -y && \
 	rm -rf /var/lib/apt/lists/*

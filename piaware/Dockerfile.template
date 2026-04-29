@@ -11,7 +11,7 @@ ENV UAT_RECEIVER_PORT 30978
 ENV RECEIVER_MLAT_PORT 30104
 ENV DUMP978_ENABLED=false
 
-ARG PERM_INSTALL="tini ca-certificates curl net-tools tclx8.4 tcllib itcl3 libboost-filesystem1.74.0 libboost-program-options1.74.0 libboost-regex1.74.0 libboost-system1.74.0 libexpat1 expect openssl rsyslog"
+ARG PERM_INSTALL="tini ca-certificates curl net-tools tclx8.4 tcllib itcl3 libboost-filesystem1.74.0 libboost-program-options1.74.0 libboost-regex1.74.0 libboost-system1.74.0 libexpat1 libreadline8 expect openssl rsyslog"
 
 RUN apt-get update && \
 	apt-get install -y --no-install-recommends $PERM_INSTALL && \

@@ -10,7 +10,7 @@ ENV ALT=
 ENV RECEIVER_HOST dump1090-fa
 ENV RECEIVER_PORT 30005
 
-ARG PERM_INSTALL="init-system-helpers dirmngr libcap2-bin tini gettext-base socat python3 python3-venv jq ca-certificates curl"
+ARG PERM_INSTALL="init-system-helpers dirmngr gnupg libcap2-bin tini gettext-base socat python3 python3-venv jq ca-certificates curl"
 
 RUN apt-get update && \
 	apt-get install -y --no-install-recommends $PERM_INSTALL && \
