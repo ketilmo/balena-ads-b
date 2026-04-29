@@ -1,18 +1,26 @@
-FROM balenalib/%%BALENA_ARCH%%-debian-node:bookworm AS base
+FROM node:22-alpine3.20
 LABEL maintainer="https://github.com/ketilmo"
 
-RUN install_packages tini
+RUN apk add --no-cache \
+    bash \
+    tini \
+    curl
 
 WORKDIR /usr/src/app
 
-COPY package.json package-lock.json tsconfig.json ./
+# renovate: datasource=github-releases depName=balena-io-experimental/autohupr-example
+ARG AUTOHUPR_VERSION=v0.1.5
 
-COPY src/ ./src/
+RUN curl -fsSL "https://github.com/balena-io-experimental/autohupr-example/archive/refs/tags/${AUTOHUPR_VERSION}.tar.gz" \
+    | tar -xz --strip-components=1 && \
+    rm -f Dockerfile docker-compose.yml balena.yml CHANGELOG.md LICENSE README.md VERSION \
+          .dockerignore .gitignore && \
+    rm -rf .github .versionbot
 
-RUN npm install && npm run build && npm prune --production
+RUN npm ci && npm run build && npm prune --omit=dev
 
 COPY start.sh ./
 
 RUN chmod +x ./start.sh
 
-ENTRYPOINT ["/usr/bin/tini", "--", "/usr/src/app/start.sh"]
+ENTRYPOINT ["/sbin/tini", "--", "/usr/src/app/start.sh"]
