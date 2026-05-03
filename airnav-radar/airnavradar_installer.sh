@@ -1,17 +1,12 @@
 #!/usr/bin/env bash
 set -e
 
-# Fetch rb24 apt signing key. Retried because keyserver.ubuntu.com has been
-# intermittently slow.
+# Fetch rb24 apt signing key. Falls back to syseleven if keyserver.ubuntu.com
+# is unreachable.
 KEY_FPR=78F6D790E30AE7F360B716FED4F914061D043681
 mkdir -p /etc/apt/keyrings
-i=0
-for server in keyserver.ubuntu.com keyserver.syseleven.de keyserver.ubuntu.com; do
-    i=$((i + 1))
-    gpg --keyserver "hkps://$server" --recv-keys "$KEY_FPR" && break
-    [ "$i" = 3 ] && { echo "rb24 key fetch failed (last server: $server)" >&2; exit 1; }
-    sleep $((i * 5))
-done
+gpg --keyserver hkps://keyserver.ubuntu.com --recv-keys "$KEY_FPR" || \
+    gpg --keyserver hkps://keyserver.syseleven.de --recv-keys "$KEY_FPR"
 gpg --export "$KEY_FPR" > /etc/apt/keyrings/rb24.gpg
 echo 'deb [signed-by=/etc/apt/keyrings/rb24.gpg] https://apt.rb24.com/ trixie main' > /etc/apt/sources.list.d/rb24.list
 

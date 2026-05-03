@@ -2,9 +2,17 @@ FROM debian:trixie-slim
 LABEL maintainer="https://github.com/ketilmo"
 ARG BALENA_ARCH=%%BALENA_ARCH%%
 
-COPY 01_nodoc /etc/dpkg/dpkg.cfg.d/
-
-RUN apt-get update && \
+RUN printf '%s\n' \
+        'path-exclude /usr/share/doc/*' \
+        'path-exclude /usr/share/man/*' \
+        'path-exclude /usr/share/groff/*' \
+        'path-exclude /usr/share/info/*' \
+        'path-exclude /usr/share/lintian/*' \
+        'path-exclude /usr/share/linda/*' \
+        'path-exclude /usr/share/locale/*' \
+        'path-include /usr/share/locale/en*' \
+        > /etc/dpkg/dpkg.cfg.d/01_nodoc && \
+    apt-get update && \
     apt-get install -y --no-install-recommends dnsmasq wireless-tools curl ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 

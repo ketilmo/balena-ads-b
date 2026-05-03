@@ -11,9 +11,17 @@ ENV RECEIVER_PORT=30005
 
 ARG PERM_INSTALL="gettext-base tini ca-certificates curl"
 
-COPY 01_nodoc /etc/dpkg/dpkg.cfg.d/
-
-RUN apt-get update && \
+RUN printf '%s\n' \
+		'path-exclude /usr/share/doc/*' \
+		'path-exclude /usr/share/man/*' \
+		'path-exclude /usr/share/groff/*' \
+		'path-exclude /usr/share/info/*' \
+		'path-exclude /usr/share/lintian/*' \
+		'path-exclude /usr/share/linda/*' \
+		'path-exclude /usr/share/locale/*' \
+		'path-include /usr/share/locale/en*' \
+		> /etc/dpkg/dpkg.cfg.d/01_nodoc && \
+	apt-get update && \
 	apt-get install -y --no-install-recommends $PERM_INSTALL && \
 	apt-get clean && apt-get autoremove -y && \
 	rm -rf /var/lib/apt/lists/*
