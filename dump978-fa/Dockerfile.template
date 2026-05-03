@@ -45,7 +45,7 @@ RUN git clone --branch master --depth 1 --single-branch https://github.com/osmoc
 	git checkout tags/${RTLSDR_VERSION} && \
 	mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release -DDETACH_KERNEL_DRIVER=ON -DINSTALL_UDEV_RULES=ON ../ && make && cd .. && \
 	dpkg-buildpackage -b && cd .. && \
-	apt-get install -y --no-install-recommends \
+	apt-get install -y --no-install-recommends --allow-downgrades \
 		./librtlsdr0_*.deb ./librtlsdr-dev_*.deb ./rtl-sdr_*.deb && \
 	apt-mark hold librtlsdr0 librtlsdr-dev rtl-sdr
 
@@ -54,7 +54,7 @@ RUN	git clone https://github.com/pothosware/SoapyRTLSDR.git && \
 	git checkout ${SOAPYRTLSDR_VERSION} && \
 	mkdir build && cd build && cmake .. && make && cd .. && \
 	dpkg-buildpackage -b && cd .. && \
-	apt-get install -y --no-install-recommends \
+	apt-get install -y --no-install-recommends --allow-downgrades \
 		./soapysdr0.7*.deb ./soapysdr-module-rtlsdr_*.deb && \
 	apt-mark hold soapysdr-module-rtlsdr
 
