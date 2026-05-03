@@ -10,7 +10,7 @@ ENV GOOGLE_MAPS_API_KEY=
 ENV RECEIVER_HOST=dump1090-fa
 ENV RECEIVER_PORT=30005
 
-ARG PERM_INSTALL="gettext-base wget tini ca-certificates curl"
+ARG PERM_INSTALL="gettext-base tini ca-certificates curl"
 
 RUN apt-get update && \
 	apt-get install -y --no-install-recommends $PERM_INSTALL && \

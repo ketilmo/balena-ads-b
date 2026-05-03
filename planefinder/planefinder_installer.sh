@@ -10,7 +10,7 @@ else
 	planefinder_arch="armhf"
 fi
 
-apt-get update
+apt-get update && apt-get install -y --no-install-recommends wget
 
 planefinder_packet="pfclient_${PLANEFINDER_VERSION}_${planefinder_arch}.deb"
 
