@@ -45,9 +45,8 @@ RUN git clone --branch master --depth 1 --single-branch https://github.com/osmoc
 	git checkout tags/${RTLSDR_VERSION} && \
 	mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release -DDETACH_KERNEL_DRIVER=ON -DINSTALL_UDEV_RULES=ON ../ && make && cd .. && \
 	dpkg-buildpackage -b && cd .. && \
-	dpkg -i librtlsdr0_*.deb && \
-	dpkg -i librtlsdr-dev_*.deb && \
-	dpkg -i rtl-sdr_*.deb && \
+	apt-get install -y --no-install-recommends \
+		./librtlsdr0_*.deb ./librtlsdr-dev_*.deb ./rtl-sdr_*.deb && \
 	apt-mark hold librtlsdr0 librtlsdr-dev rtl-sdr
 
 RUN	git clone https://github.com/pothosware/SoapyRTLSDR.git && \
@@ -55,7 +54,8 @@ RUN	git clone https://github.com/pothosware/SoapyRTLSDR.git && \
 	git checkout ${SOAPYRTLSDR_VERSION} && \
 	mkdir build && cd build && cmake .. && make && cd .. && \
 	dpkg-buildpackage -b && cd .. && \
-	dpkg -i soapysdr0.7*.deb soapysdr-module-rtlsdr_*.deb && \
+	apt-get install -y --no-install-recommends \
+		./soapysdr0.7*.deb ./soapysdr-module-rtlsdr_*.deb && \
 	apt-mark hold soapysdr-module-rtlsdr
 
 WORKDIR /tmp
@@ -78,16 +78,15 @@ COPY add-serial-978.sh /
 
 WORKDIR /tmp
 
-RUN dpkg -i librtlsdr0_*.deb rtl-sdr_*.deb && \
-	apt-mark hold librtlsdr0 rtl-sdr && \
-	dpkg -i soapysdr0.7*.deb soapysdr-module-rtlsdr_*.deb && \
-	apt-mark hold soapysdr-module-rtlsdr
-	
-RUN dpkg -i dump978-fa_*.deb skyaware978_*.deb && \
-	mkdir -p /run/dump978-fa && \
-	mkdir -p /run/skyaware978 && \
-	chmod +x /start.sh && \
-	chmod +x /add-serial-978.sh && \
-	rm -rf /tmp/*
+RUN apt-get update && \
+	apt-get install -y --no-install-recommends \
+		./librtlsdr0_*.deb ./rtl-sdr_*.deb \
+		./soapysdr0.7*.deb ./soapysdr-module-rtlsdr_*.deb \
+		./dump978-fa_*.deb ./skyaware978_*.deb && \
+	apt-mark hold librtlsdr0 rtl-sdr soapysdr-module-rtlsdr && \
+	apt-get clean && apt-get autoremove -y && \
+	rm -rf /var/lib/apt/lists/* /tmp/* && \
+	mkdir -p /run/dump978-fa /run/skyaware978 && \
+	chmod +x /start.sh /add-serial-978.sh
 
 ENTRYPOINT ["/usr/bin/tini", "--", "/start.sh"]

@@ -87,6 +87,18 @@
       "currentValueTemplate": "master",
       "packageNameTemplate": "https://github.com/wiedehopf/airspy-conf",
       "datasourceTemplate": "git-refs"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/(^|/)Dockerfile\\.[^/]*$/"
+      ],
+      "matchStrings": [
+        "PIAWARE_BUILDER_REF=(?<currentDigest>.*?)\\n"
+      ],
+      "currentValueTemplate": "dev",
+      "packageNameTemplate": "https://github.com/flightaware/piaware_builder",
+      "datasourceTemplate": "git-refs"
     }
   ],
   "customDatasources": {

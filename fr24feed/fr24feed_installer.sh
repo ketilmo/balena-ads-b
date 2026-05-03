@@ -19,7 +19,7 @@ cd /tmp
 
 fr24feed_installer="fr24feed_${FR24FEED_VERSION}_${fr24feed_arch}.tgz"
 primary_url="https://repo-feed.flightradar24.com/${fr24feed_path}/${fr24feed_installer}"
-fallback_url="http://repo.feed.flightradar24.com/${fr24feed_path}/${fr24feed_installer}"
+fallback_url="https://s3.dualstack.us-east-1.amazonaws.com/repo.feed.flightradar24.com/${fr24feed_path}/${fr24feed_installer}"
 
 wget -O fr24feed.tgz "$primary_url" || wget -O fr24feed.tgz "$fallback_url"
 

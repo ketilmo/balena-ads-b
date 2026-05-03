@@ -60,9 +60,8 @@ RUN git clone --branch master --depth 1 --single-branch https://github.com/osmoc
 	git checkout tags/${RTLSDR_VERSION} && \
 	mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release -DDETACH_KERNEL_DRIVER=ON -DINSTALL_UDEV_RULES=ON ../ && make && cd .. && \
 	dpkg-buildpackage -b && cd .. && \
-	dpkg -i librtlsdr0_*.deb && \
-	dpkg -i librtlsdr-dev_*.deb && \
-	dpkg -i rtl-sdr_*.deb && \
+	apt-get install -y --no-install-recommends \
+		./librtlsdr0_*.deb ./librtlsdr-dev_*.deb ./rtl-sdr_*.deb && \
 	apt-mark hold librtlsdr0 librtlsdr-dev rtl-sdr
 
 RUN git clone https://github.com/flightaware/dump1090 && \
@@ -94,19 +93,16 @@ COPY 87-airspy.conf /etc/lighttpd/conf-available/
 
 WORKDIR /tmp
 
-RUN dpkg -i librtlsdr0_*.deb && \
-	dpkg -i rtl-sdr_*.deb && \
+RUN apt-get update && \
+	apt-get install -y --no-install-recommends \
+		./librtlsdr0_*.deb ./rtl-sdr_*.deb \
+		./dump1090-fa_*.deb ./beast-splitter_*.deb && \
 	apt-mark hold librtlsdr0 rtl-sdr && \
-	dpkg -i dump1090-fa_*.deb && \
 	ln -s /bin/udevadm /sbin/udevadm && \
-	dpkg -i beast-splitter_*.deb && \
-	rm -rf /tmp/* && \
-	mkdir -p /run/dump1090-fa && \
-	mkdir -p mkdir -p /run/airspy_adsb && \
-	chmod +x /start.sh && \
-	chmod +x /add-serial-1090.sh && \
-	chmod +x /showstrongmessages.sh && \
-	chmod +x /usr/bin/airspy_adsb && \
+	apt-get clean && apt-get autoremove -y && \
+	rm -rf /var/lib/apt/lists/* /tmp/* && \
+	mkdir -p /run/dump1090-fa /run/airspy_adsb && \
+	chmod +x /start.sh /add-serial-1090.sh /showstrongmessages.sh /usr/bin/airspy_adsb && \
 	chmod 644 /etc/lighttpd/conf-available/87-airspy.conf
 
 ENTRYPOINT ["/usr/bin/tini", "--", "/start.sh"]

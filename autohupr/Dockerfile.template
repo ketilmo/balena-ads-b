@@ -11,11 +11,12 @@ WORKDIR /usr/src/app
 # renovate: datasource=github-releases depName=balena-io-experimental/autohupr-example
 ARG AUTOHUPR_VERSION=v0.1.5
 
-RUN curl -fsSL "https://github.com/balena-io-experimental/autohupr-example/archive/refs/tags/${AUTOHUPR_VERSION}.tar.gz" \
-    | tar -xz --strip-components=1 && \
-    rm -f Dockerfile docker-compose.yml balena.yml CHANGELOG.md LICENSE README.md VERSION \
-          .dockerignore .gitignore && \
-    rm -rf .github .versionbot
+RUN apk add --no-cache --virtual .git-deps git && \
+    git clone --depth 1 --branch "${AUTOHUPR_VERSION}" \
+        https://github.com/balena-io-experimental/autohupr-example.git . && \
+    rm -rf .git Dockerfile docker-compose.yml balena.yml CHANGELOG.md LICENSE README.md VERSION \
+           .dockerignore .gitignore .github .versionbot && \
+    apk del .git-deps
 
 RUN npm ci && npm run build && npm prune --omit=dev && \
     npm cache clean --force && rm -rf /tmp/*

@@ -46,7 +46,7 @@ WORKDIR /tmp
 # stock package omits this flag, which surfaces as TLS EOF errors when
 # piaware connects to FlightAware. We add the flag and bump the version
 # to +fa1 so apt won't replace our build with the stock package.
-RUN echo 'deb-src http://deb.debian.org/debian trixie main' > /etc/apt/sources.list.d/debian-src.list && \
+RUN echo 'deb-src https://deb.debian.org/debian trixie main' > /etc/apt/sources.list.d/debian-src.list && \
 	apt-get update && \
 	apt-get build-dep -y tcl-tls && \
 	cd /tmp && \
@@ -56,12 +56,12 @@ RUN echo 'deb-src http://deb.debian.org/debian trixie main' > /etc/apt/sources.l
 	dch --local +fa --distribution trixie 'Enable --enable-ssl-fastpath for piaware EOF fix' && \
 	dpkg-buildpackage -b --no-sign && \
 	cd .. && \
-	dpkg -i tcl-tls_*.deb && \
+	apt-get install -y --no-install-recommends ./tcl-tls_*.deb && \
 	apt-mark hold tcl-tls
 
 WORKDIR /tmp
 
-RUN git clone http://github.com/flightaware/piaware_builder && \
+RUN git clone https://github.com/flightaware/piaware_builder && \
 	cd piaware_builder && \
 	git checkout ${PIAWARE_BUILDER_REF} && \
 	./sensible-build.sh trixie && \
