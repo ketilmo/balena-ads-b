@@ -14,7 +14,7 @@ ARG AUTOHUPR_VERSION=v0.1.5
 RUN apk add --no-cache --virtual .git-deps git && \
     git clone --depth 1 --branch "${AUTOHUPR_VERSION}" \
         https://github.com/balena-io-experimental/autohupr-example.git . && \
-    rm -rf .git Dockerfile docker-compose.yml balena.yml CHANGELOG.md LICENSE README.md VERSION \
+    rm -rf .git Dockerfile docker-compose.yml balena.yml CHANGELOG.md README.md VERSION \
            .dockerignore .gitignore .github .versionbot && \
     apk del .git-deps
 

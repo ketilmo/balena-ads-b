@@ -47,7 +47,7 @@ ARG DUMP1090_VERSION=v10.2
 ARG BEAST_SPLITTER_VERSION=v10.2
 # renovate: datasource=git-refs depName=wiedehopf/airspy-conf versioning=loose
 ARG AIRSPY_VERSION=7f07ea95311cceb7eb37cbaf965b65faae5551bd
-ARG TEMP_INSTALL="git build-essential fakeroot cmake debhelper pkg-config libncurses5-dev libbladerf-dev libhackrf-dev liblimesuite-dev libusb-1.0-0-dev libsoapysdr-dev librtlsdr-dev apt-utils apt-transport-https debhelper wget"
+ARG TEMP_INSTALL="git build-essential fakeroot cmake debhelper pkg-config libncurses5-dev libbladerf-dev libhackrf-dev liblimesuite-dev libusb-1.0-0-dev libsoapysdr-dev librtlsdr-dev apt-utils apt-transport-https wget"
 
 RUN apt-get update && \
 	apt-get install -y --no-install-recommends $TEMP_INSTALL
