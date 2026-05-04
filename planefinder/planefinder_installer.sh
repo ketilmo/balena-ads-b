@@ -4,15 +4,26 @@ set -e
 arch="$(dpkg --print-architecture)"
 echo System Architecture: $arch
 
-if [ "$arch" = "arm64" ] || [ "$arch" = "amd64" ]; then
-	planefinder_arch="$arch"
-else
-	planefinder_arch="armhf"
-fi
+case "$arch" in
+	arm64|amd64|armhf)
+		planefinder_version="$PLANEFINDER_VERSION"
+		planefinder_arch="$arch"
+		;;
+	i386)
+		# PlaneFinder dropped i386 builds after 5.0.161; pin to the
+		# last release that ships an i386 .deb.
+		planefinder_version="5.0.161"
+		planefinder_arch="i386"
+		;;
+	*)
+		echo "Unsupported architecture for PlaneFinder: $arch" >&2
+		exit 1
+		;;
+esac
 
 apt-get update && apt-get install -y --no-install-recommends wget
 
-planefinder_packet="pfclient_${PLANEFINDER_VERSION}_${planefinder_arch}.deb"
+planefinder_packet="pfclient_${planefinder_version}_${planefinder_arch}.deb"
 
 cd /tmp/
 
