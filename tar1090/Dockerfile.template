@@ -1,5 +1,7 @@
 # Uses base image from sdr-enthusiasts
-FROM ghcr.io/sdr-enthusiasts/docker-tar1090:latest AS base
+# renovate: datasource=docker depName=ghcr.io/sdr-enthusiasts/docker-tar1090
+ARG TAR1090_VERSION=latest-build-1436
+FROM ghcr.io/sdr-enthusiasts/docker-tar1090:${TAR1090_VERSION} AS base
 LABEL maintainer="https://github.com/ketilmo"
 
 # Copy our start script into correct place to be at the beginning of s6 startup

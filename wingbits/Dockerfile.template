@@ -1,4 +1,4 @@
-FROM balenalib/%%BALENA_ARCH%%-debian:bookworm AS base
+FROM debian:trixie-slim AS base
 LABEL maintainer="https://github.com/ketilmo"
 
 EXPOSE 30154
@@ -14,11 +14,21 @@ ENV WINGBITS_CONFIG_VERSION=0.2.1
 ENV WINGBITS_COMMIT_ID=v1.10.25
 ENV WINGBITS_DATE=2026-04-28T10:50:44.608968853Z
 
-ARG PERM_INSTALL="curl gettext-base tini ncurses-dev zlib1g jq python3-pip python3-venv wget"
+ARG PERM_INSTALL="curl ca-certificates gettext-base tini ncurses-dev zlib1g jq python3-pip python3-venv wget"
 
-RUN apt update && \
-	apt install -y $PERM_INSTALL && \
-	apt clean && apt autoclean && apt autoremove && \
+RUN printf '%s\n' \
+		'path-exclude /usr/share/doc/*' \
+		'path-exclude /usr/share/man/*' \
+		'path-exclude /usr/share/groff/*' \
+		'path-exclude /usr/share/info/*' \
+		'path-exclude /usr/share/lintian/*' \
+		'path-exclude /usr/share/linda/*' \
+		'path-exclude /usr/share/locale/*' \
+		'path-include /usr/share/locale/en*' \
+		> /etc/dpkg/dpkg.cfg.d/01_nodoc && \
+	apt-get update && \
+	apt-get install -y --no-install-recommends $PERM_INSTALL && \
+	apt-get clean && apt-get autoremove -y && \
 	rm -rf /var/lib/apt/lists/*
 
 FROM base AS buildstep
@@ -29,8 +39,8 @@ ARG TEMP_INSTALL="git gcc make libusb-1.0-0-dev build-essential debhelper zlib1g
 
 WORKDIR /tmp
 
-RUN apt update && \
-	apt install -y $TEMP_INSTALL
+RUN apt-get update && \
+	apt-get install -y --no-install-recommends $TEMP_INSTALL
 
 WORKDIR /tmp
 

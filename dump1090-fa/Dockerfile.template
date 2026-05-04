@@ -1,4 +1,4 @@
-FROM balenalib/%%BALENA_ARCH%%-debian:bookworm AS base
+FROM debian:trixie-slim AS base
 LABEL maintainer="https://github.com/ketilmo"
 
 EXPOSE 30001 30002 30003 30004 30005 30102 30104 30105 30106 8080
@@ -20,11 +20,21 @@ ENV AIRSPY_ADSB_GAIN="auto"
 ENV AIRSPY_ADSB_SAMPLE_RATE="12"
 ENV AIRSPY_ADSB_STATS="false"
 
-ARG PERM_INSTALL="tini lighttpd gettext-base libusb-1.0-0 libbladerf2 libhackrf0 liblimesuite22.09-1 libsoapysdr0.8 libncurses6 libboost-system-dev libboost-program-options-dev libboost-regex-dev"
+ARG PERM_INSTALL="tini ca-certificates curl lighttpd gettext-base libusb-1.0-0 libbladerf2 libhackrf0 liblimesuite23.11-1 libsoapysdr0.8 libncurses6 libboost-system-dev libboost-program-options-dev libboost-regex-dev adduser"
 
-RUN apt update && \
-	apt install -y $PERM_INSTALL && \
-	apt clean && apt autoclean && apt autoremove && \
+RUN printf '%s\n' \
+		'path-exclude /usr/share/doc/*' \
+		'path-exclude /usr/share/man/*' \
+		'path-exclude /usr/share/groff/*' \
+		'path-exclude /usr/share/info/*' \
+		'path-exclude /usr/share/lintian/*' \
+		'path-exclude /usr/share/linda/*' \
+		'path-exclude /usr/share/locale/*' \
+		'path-include /usr/share/locale/en*' \
+		> /etc/dpkg/dpkg.cfg.d/01_nodoc && \
+	apt-get update && \
+	apt-get install -y --no-install-recommends $PERM_INSTALL && \
+	apt-get clean && apt-get autoremove -y && \
 	rm -rf /var/lib/apt/lists/*
 
 FROM base AS buildstep
@@ -37,10 +47,10 @@ ARG DUMP1090_VERSION=v10.2
 ARG BEAST_SPLITTER_VERSION=v10.2
 # renovate: datasource=git-refs depName=wiedehopf/airspy-conf versioning=loose
 ARG AIRSPY_VERSION=7f07ea95311cceb7eb37cbaf965b65faae5551bd
-ARG TEMP_INSTALL="git build-essential fakeroot cmake debhelper pkg-config libncurses5-dev libbladerf-dev libhackrf-dev liblimesuite-dev libusb-1.0-0-dev libsoapysdr-dev librtlsdr-dev apt-utils apt-transport-https debhelper wget"
+ARG TEMP_INSTALL="git build-essential fakeroot cmake debhelper pkg-config libncurses5-dev libbladerf-dev libhackrf-dev liblimesuite-dev libusb-1.0-0-dev libsoapysdr-dev librtlsdr-dev apt-utils apt-transport-https wget"
 
-RUN apt update && \
-	apt install -y $TEMP_INSTALL
+RUN apt-get update && \
+	apt-get install -y --no-install-recommends $TEMP_INSTALL
 
 WORKDIR /tmp
 
@@ -50,9 +60,8 @@ RUN git clone --branch master --depth 1 --single-branch https://github.com/osmoc
 	git checkout tags/${RTLSDR_VERSION} && \
 	mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release -DDETACH_KERNEL_DRIVER=ON -DINSTALL_UDEV_RULES=ON ../ && make && cd .. && \
 	dpkg-buildpackage -b && cd .. && \
-	dpkg -i librtlsdr0_*.deb && \
-	dpkg -i librtlsdr-dev_*.deb && \
-	dpkg -i rtl-sdr_*.deb && \
+	apt-get install -y --no-install-recommends --allow-downgrades \
+		./librtlsdr0_*.deb ./librtlsdr-dev_*.deb ./rtl-sdr_*.deb && \
 	apt-mark hold librtlsdr0 librtlsdr-dev rtl-sdr
 
 RUN git clone https://github.com/flightaware/dump1090 && \
@@ -84,19 +93,16 @@ COPY 87-airspy.conf /etc/lighttpd/conf-available/
 
 WORKDIR /tmp
 
-RUN dpkg -i librtlsdr0_*.deb && \
-	dpkg -i rtl-sdr_*.deb && \
+RUN apt-get update && \
+	apt-get install -y --no-install-recommends \
+		./librtlsdr0_*.deb ./rtl-sdr_*.deb \
+		./dump1090-fa_*.deb ./beast-splitter_*.deb && \
 	apt-mark hold librtlsdr0 rtl-sdr && \
-	dpkg -i dump1090-fa_*.deb && \
 	ln -s /bin/udevadm /sbin/udevadm && \
-	dpkg -i beast-splitter_*.deb && \
-	rm -rf /tmp/* && \
-	mkdir -p /run/dump1090-fa && \
-	mkdir -p mkdir -p /run/airspy_adsb && \
-	chmod +x /start.sh && \
-	chmod +x /add-serial-1090.sh && \
-	chmod +x /showstrongmessages.sh && \
-	chmod +x /usr/bin/airspy_adsb && \
+	apt-get clean && apt-get autoremove -y && \
+	rm -rf /var/lib/apt/lists/* /tmp/* && \
+	mkdir -p /run/dump1090-fa /run/airspy_adsb && \
+	chmod +x /start.sh /add-serial-1090.sh /showstrongmessages.sh /usr/bin/airspy_adsb && \
 	chmod 644 /etc/lighttpd/conf-available/87-airspy.conf
 
 ENTRYPOINT ["/usr/bin/tini", "--", "/start.sh"]

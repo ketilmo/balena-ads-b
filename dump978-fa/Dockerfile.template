@@ -1,4 +1,4 @@
-FROM balenalib/%%BALENA_ARCH%%-debian:bookworm AS base
+FROM debian:trixie-slim AS base
 LABEL maintainer="https://github.com/ketilmo"
 
 EXPOSE 30978 30979 8978
@@ -7,11 +7,21 @@ ENV DUMP978_DEVICE=00000978
 ENV DUMP978_ENABLED=false
 ENV REBOOT_DEVICE_ON_SERVICE_EXIT=""
 
-ARG PERM_INSTALL="tini libboost-program-options-dev libusb-1.0-0 lighttpd swig gettext-base libboost-filesystem1.74.0 libboost-regex1.74.0 libboost-system1.74.0 libsoapysdr0.8"
+ARG PERM_INSTALL="tini ca-certificates curl libboost-program-options-dev libusb-1.0-0 lighttpd swig gettext-base libboost-filesystem1.83.0 libboost-regex1.83.0 libboost-system1.83.0 libsoapysdr0.8 adduser"
 
-RUN apt update && \
-	apt install -y $PERM_INSTALL && \
-	apt clean && apt autoclean && apt autoremove && \
+RUN printf '%s\n' \
+		'path-exclude /usr/share/doc/*' \
+		'path-exclude /usr/share/man/*' \
+		'path-exclude /usr/share/groff/*' \
+		'path-exclude /usr/share/info/*' \
+		'path-exclude /usr/share/lintian/*' \
+		'path-exclude /usr/share/linda/*' \
+		'path-exclude /usr/share/locale/*' \
+		'path-include /usr/share/locale/en*' \
+		> /etc/dpkg/dpkg.cfg.d/01_nodoc && \
+	apt-get update && \
+	apt-get install -y --no-install-recommends $PERM_INSTALL && \
+	apt-get clean && apt-get autoremove -y && \
 	rm -rf /var/lib/apt/lists/*
 
 FROM base AS buildstep
@@ -22,10 +32,10 @@ ARG RTLSDR_VERSION=v2.0.2
 ARG SOAPYRTLSDR_VERSION=b1f568d1b57cc973a1d2ee49be68d0d748d164e4
 # renovate: datasource=github-tags depName=flightaware/dump978 versioning=loose
 ARG DUMP978_VERSION=v10.2
-ARG TEMP_INSTALL="build-essential cmake git debhelper pkg-config libboost-system-dev libboost-regex-dev libusb-1.0-0-dev libboost-filesystem-dev libboost-program-options-dev debhelper libsoapysdr-dev"
+ARG TEMP_INSTALL="build-essential cmake git debhelper pkg-config libboost-system-dev libboost-regex-dev libusb-1.0-0-dev libboost-filesystem-dev libboost-program-options-dev libsoapysdr-dev"
 
-RUN apt update && \
-	apt install -y $TEMP_INSTALL
+RUN apt-get update && \
+	apt-get install -y --no-install-recommends $TEMP_INSTALL
 
 WORKDIR /tmp
 
@@ -35,9 +45,8 @@ RUN git clone --branch master --depth 1 --single-branch https://github.com/osmoc
 	git checkout tags/${RTLSDR_VERSION} && \
 	mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release -DDETACH_KERNEL_DRIVER=ON -DINSTALL_UDEV_RULES=ON ../ && make && cd .. && \
 	dpkg-buildpackage -b && cd .. && \
-	dpkg -i librtlsdr0_*.deb && \
-	dpkg -i librtlsdr-dev_*.deb && \
-	dpkg -i rtl-sdr_*.deb && \
+	apt-get install -y --no-install-recommends --allow-downgrades \
+		./librtlsdr0_*.deb ./librtlsdr-dev_*.deb ./rtl-sdr_*.deb && \
 	apt-mark hold librtlsdr0 librtlsdr-dev rtl-sdr
 
 RUN	git clone https://github.com/pothosware/SoapyRTLSDR.git && \
@@ -45,7 +54,8 @@ RUN	git clone https://github.com/pothosware/SoapyRTLSDR.git && \
 	git checkout ${SOAPYRTLSDR_VERSION} && \
 	mkdir build && cd build && cmake .. && make && cd .. && \
 	dpkg-buildpackage -b && cd .. && \
-	dpkg -i soapysdr0.7*.deb soapysdr-module-rtlsdr_*.deb && \
+	apt-get install -y --no-install-recommends --allow-downgrades \
+		./soapysdr0.7*.deb ./soapysdr-module-rtlsdr_*.deb && \
 	apt-mark hold soapysdr-module-rtlsdr
 
 WORKDIR /tmp
@@ -68,16 +78,15 @@ COPY add-serial-978.sh /
 
 WORKDIR /tmp
 
-RUN dpkg -i librtlsdr0_*.deb rtl-sdr_*.deb && \
-	apt-mark hold librtlsdr0 rtl-sdr && \
-	dpkg -i soapysdr0.7*.deb soapysdr-module-rtlsdr_*.deb && \
-	apt-mark hold soapysdr-module-rtlsdr
-	
-RUN dpkg -i dump978-fa_*.deb skyaware978_*.deb && \
-	mkdir -p /run/dump978-fa && \
-	mkdir -p /run/skyaware978 && \
-	chmod +x /start.sh && \
-	chmod +x /add-serial-978.sh && \
-	rm -rf /tmp/*
+RUN apt-get update && \
+	apt-get install -y --no-install-recommends \
+		./librtlsdr0_*.deb ./rtl-sdr_*.deb \
+		./soapysdr0.7*.deb ./soapysdr-module-rtlsdr_*.deb \
+		./dump978-fa_*.deb ./skyaware978_*.deb && \
+	apt-mark hold librtlsdr0 rtl-sdr soapysdr-module-rtlsdr && \
+	apt-get clean && apt-get autoremove -y && \
+	rm -rf /var/lib/apt/lists/* /tmp/* && \
+	mkdir -p /run/dump978-fa /run/skyaware978 && \
+	chmod +x /start.sh /add-serial-978.sh
 
 ENTRYPOINT ["/usr/bin/tini", "--", "/start.sh"]

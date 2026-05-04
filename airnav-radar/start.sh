@@ -7,7 +7,7 @@ if [[ ",$(echo -e "${DISABLED_SERVICES}" | tr -d '[:space:]')," = *",$BALENA_SER
         echo "$BALENA_SERVICE_NAME is manually disabled. Sending request to stop the service:"
         curl --fail --retry 86400 --retry-delay 1 --retry-all-errors --header "Content-Type:application/json" "$BALENA_SUPERVISOR_ADDRESS/v2/applications/$BALENA_APP_ID/stop-service?apikey=$BALENA_SUPERVISOR_API_KEY" -d '{"serviceName": "'$BALENA_SERVICE_NAME'"}'
         echo " "
-        balena-idle
+        sleep infinity
 fi
 
 # Verify that all the required variables are set before starting up the application.
@@ -58,7 +58,7 @@ if [ "$missing_variables" = true ]
 then
         echo "Settings missing, aborting..."
         echo " "
-        balena-idle
+        sleep infinity
 fi
 
 # If UAT is enabled through config, enable it in rbfeed.

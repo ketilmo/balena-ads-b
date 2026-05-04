@@ -1,24 +1,5 @@
-FROM balenalib/%%BALENA_ARCH%%-debian-golang:bookworm AS buildstep
+FROM golang:1.26.2-trixie AS buildstep
 LABEL maintainer="https://github.com/ketilmo"
-
-# Update go version
-ENV GO_VERSION 1.25.4
-
-ARG BALENA_ARCH=%%BALENA_ARCH%%
-
-# Detect architecture and set appropriate Go download URL
-RUN case $BALENA_ARCH in \
-        "amd64")  GOARCH=amd64; GOHASH="9fa5ffeda4170de60f67f3aa0f824e426421ba724c21e133c1e35d6159ca1bec" ;; \
-        "aarch64")  GOARCH=arm64; GOHASH="a68e86d4b72c2c2fecf7dfed667680b6c2a071221bbdb6913cf83ce3f80d9ff0" ;; \
-        "armv7hf") GOARCH=armv6l; GOHASH="ff86a6406310d840edb170f539a51a7efac0ac2b2f84527b1b2bf5935fc4ab6d" ;; \
-        *)        echo "Unsupported architecture: ${TARGETARCH}" && exit 1 ;; \
-    esac && \
-    rm -rf /usr/local/go && \
-    mkdir -p /usr/local/go && \
-    curl -SLO "https://go.dev/dl/go${GO_VERSION}.linux-${GOARCH}.tar.gz" && \
-    echo "${GOHASH}  go${GO_VERSION}.linux-${GOARCH}.tar.gz" | sha256sum -c - && \
-    tar -xzf "go${GO_VERSION}.linux-${GOARCH}.tar.gz" -C /usr/local/go --strip-components=1 && \
-    rm -f go${GO_VERSION}.linux-${GOARCH}.tar.gz
 
 # specify plane.watch pw-feeder version
 # renovate: datasource=github-tags depName=plane-watch/pw-feeder versioning=loose
@@ -28,11 +9,11 @@ ARG PLANEWATCH_VERSION=v0.0.6
 # renovate: datasource=github-tags depName=mutability/mlat-client versioning=loose
 ARG MLAT_CLIENT_VERSION=v0.2.13
 
-# install build step pre-requs
-ARG TEMP_INSTALL="python3-dev python3-venv"
+# install build step prereqs
+ARG TEMP_INSTALL="python3-dev python3-venv curl ca-certificates"
 WORKDIR /tmp
-RUN apt update && \
-	apt install -y $TEMP_INSTALL
+RUN apt-get update && \
+	apt-get install -y --no-install-recommends $TEMP_INSTALL
 
 # build pw-feeder binary from source
 WORKDIR /tmp
@@ -48,23 +29,17 @@ WORKDIR /tmp
 RUN git clone --branch "$MLAT_CLIENT_VERSION" https://github.com/mutability/mlat-client.git /tmp/mlat-client && \
     cd /tmp/mlat-client && \
     python3 -m venv /usr/local/share/mlat-client/venv/ && \
+    /usr/local/share/mlat-client/venv/bin/pip install --no-cache-dir setuptools pyasyncore && \
     /usr/local/share/mlat-client/venv/bin/python3 ./setup.py build && \
     /usr/local/share/mlat-client/venv/bin/python3 ./setup.py install
 
-# download let's encrypt CA certs
+# download let's encrypt CA certs in parallel — xargs propagates child failures,
+# so a single 404 fails the build instead of leaving the bundle incomplete.
 WORKDIR /tmp/letsencrypt
-RUN curl -so lets-encrypt-e5.crt https://letsencrypt.org/certs/2024/e5.pem && \
-    curl -so lets-encrypt-e6.crt https://letsencrypt.org/certs/2024/e6.pem && \
-    curl -so lets-encrypt-e7.crt https://letsencrypt.org/certs/2024/e7.pem && \
-    curl -so lets-encrypt-e8.crt https://letsencrypt.org/certs/2024/e8.pem && \
-    curl -so lets-encrypt-e9.crt https://letsencrypt.org/certs/2024/e9.pem && \
-    curl -so lets-encrypt-r10.crt https://letsencrypt.org/certs/2024/r10.pem && \
-    curl -so lets-encrypt-r11.crt https://letsencrypt.org/certs/2024/r11.pem && \
-    curl -so lets-encrypt-r12.crt https://letsencrypt.org/certs/2024/r12.pem && \
-    curl -so lets-encrypt-r13.crt https://letsencrypt.org/certs/2024/r13.pem && \
-    curl -so lets-encrypt-r14.crt https://letsencrypt.org/certs/2024/r14.pem
+RUN printf '%s\n' e5 e6 e7 e8 e9 r10 r11 r12 r13 r14 | \
+    xargs -P10 -I{} curl -fsSL -o "lets-encrypt-{}.crt" "https://letsencrypt.org/certs/2024/{}.pem"
 
-FROM balenalib/%%BALENA_ARCH%%-debian:bookworm AS release
+FROM debian:trixie-slim AS release
 
 ENV LAT=
 ENV LON=
@@ -77,10 +52,21 @@ ENV RECEIVER_PORT 30005
 EXPOSE 30105
 
 # install pre-requisite packages
-ARG PERM_INSTALL="python3 tini"
-RUN apt update && \
-	apt install -y $PERM_INSTALL && \
-	apt clean && apt autoclean && apt autoremove && \
+ARG PERM_INSTALL="python3 tini ca-certificates curl"
+
+RUN printf '%s\n' \
+		'path-exclude /usr/share/doc/*' \
+		'path-exclude /usr/share/man/*' \
+		'path-exclude /usr/share/groff/*' \
+		'path-exclude /usr/share/info/*' \
+		'path-exclude /usr/share/lintian/*' \
+		'path-exclude /usr/share/linda/*' \
+		'path-exclude /usr/share/locale/*' \
+		'path-include /usr/share/locale/en*' \
+		> /etc/dpkg/dpkg.cfg.d/01_nodoc && \
+	apt-get update && \
+	apt-get install -y --no-install-recommends $PERM_INSTALL && \
+	apt-get clean && apt-get autoremove -y && \
 	rm -rf /var/lib/apt/lists/*
 
 # copy pw-feeder binary from buildstep

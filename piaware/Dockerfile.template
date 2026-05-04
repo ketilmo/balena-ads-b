@@ -1,4 +1,4 @@
-FROM balenalib/%%BALENA_ARCH%%-debian:bookworm AS base
+FROM debian:trixie-slim AS base
 LABEL maintainer="https://github.com/ketilmo"
 
 EXPOSE 30105 30106
@@ -11,55 +11,83 @@ ENV UAT_RECEIVER_PORT 30978
 ENV RECEIVER_MLAT_PORT 30104
 ENV DUMP978_ENABLED=false
 
-ARG PERM_INSTALL="tini net-tools tclx8.4 tcllib itcl3 libboost-filesystem1.74.0 libboost-program-options1.74.0 libboost-regex1.74.0 libboost-system1.74.0 libexpat1 expect openssl rsyslog"
+ARG PERM_INSTALL="tini ca-certificates curl net-tools expect openssl rsyslog"
 
-RUN apt update && \
-	apt install -y $PERM_INSTALL && \
-	apt clean && apt autoclean && apt autoremove && \
+RUN printf '%s\n' \
+		'path-exclude /usr/share/doc/*' \
+		'path-exclude /usr/share/man/*' \
+		'path-exclude /usr/share/groff/*' \
+		'path-exclude /usr/share/info/*' \
+		'path-exclude /usr/share/lintian/*' \
+		'path-exclude /usr/share/linda/*' \
+		'path-exclude /usr/share/locale/*' \
+		'path-include /usr/share/locale/en*' \
+		> /etc/dpkg/dpkg.cfg.d/01_nodoc && \
+	apt-get update && \
+	apt-get install -y --no-install-recommends $PERM_INSTALL && \
+	apt-get clean && apt-get autoremove -y && \
 	rm -rf /var/lib/apt/lists/*
 
 FROM base AS buildstep
 
-# renovate: datasource=github-tags depName=flightaware/piaware_builder versioning=loose
-ARG PIAWARE_VERSION=v10.2
-ARG TEMP_INSTALL="wget devscripts build-essential debhelper tcl8.6-dev autoconf python3-dev python3-venv python3-setuptools python3-wheel python3-build python3-pip patchelf debhelper libz-dev git libssl-dev tcl-dev chrpath libboost-system-dev libboost-program-options-dev libboost-regex-dev libboost-filesystem-dev"
+# Pinned to a known-good commit on dev until FA tags trixie support in a
+# stable release. dev provides the trixie/ packaging variant + cx_Freeze
+# 8.5.0 (Py 3.13 compat). Bump when verifying a newer dev HEAD.
+# renovate: datasource=git-refs depName=flightaware/piaware_builder versioning=loose
+ARG PIAWARE_BUILDER_REF=cc39b137e8a7de6f97e803e2fc7ed91650351682
+ARG TEMP_INSTALL="wget devscripts build-essential debhelper tcl8.6-dev autoconf python3-dev python3-venv python3-setuptools python3-wheel python3-build python3-pip python3-pyasyncore python3-filelock patchelf libz-dev git libssl-dev tcl-dev chrpath libboost-system-dev libboost-program-options-dev libboost-regex-dev libboost-filesystem-dev"
 
-RUN apt update && \
-	apt install -y $TEMP_INSTALL
+RUN apt-get update && \
+	apt-get install -y --no-install-recommends $TEMP_INSTALL
 
 WORKDIR /tmp
 
-RUN git clone http://github.com/flightaware/tcltls-rebuild.git && \
-	cd tcltls-rebuild && \
-	./prepare-build.sh bullseye && \
-	cd package-bullseye && \
+# Rebuild Trixie's tcl-tls (1.8.0-2) with --enable-ssl-fastpath. Trixie's
+# stock package omits this flag, which surfaces as TLS EOF errors when
+# piaware connects to FlightAware. We add the flag and bump the version
+# to +fa1 so apt won't replace our build with the stock package.
+RUN echo 'deb-src https://deb.debian.org/debian trixie main' > /etc/apt/sources.list.d/debian-src.list && \
+	apt-get update && \
+	apt-get build-dep -y tcl-tls && \
+	cd /tmp && \
+	apt-get source tcl-tls && \
+	cd tcltls-1.8.0 && \
+	sed -i 's/--enable-deterministic/--enable-deterministic --enable-ssl-fastpath/' debian/rules && \
+	dch --local +fa --distribution trixie 'Enable --enable-ssl-fastpath for piaware EOF fix' && \
 	dpkg-buildpackage -b --no-sign && \
 	cd .. && \
-	dpkg -i tcl-tls_*.deb && \
+	apt-get install -y --no-install-recommends ./tcl-tls_*.deb && \
 	apt-mark hold tcl-tls
 
 WORKDIR /tmp
 
-RUN git clone http://github.com/flightaware/piaware_builder && \
+RUN git clone https://github.com/flightaware/piaware_builder && \
 	cd piaware_builder && \
-	git checkout tags/${PIAWARE_VERSION} && \
-	./sensible-build.sh bookworm && \
-	cd package-bookworm && \
+	git checkout ${PIAWARE_BUILDER_REF} && \
+	./sensible-build.sh trixie && \
+	cd package-trixie && \
     dpkg-buildpackage -b --no-sign
 
 FROM base AS release
 
-COPY --from=buildstep /tmp/tcltls-rebuild/tcl-tls_*.deb /tmp/
+COPY --from=buildstep /tmp/tcl-tls_*.deb /tmp/
 COPY --from=buildstep /tmp/piaware_builder/piaware_*.deb /tmp/
 COPY start.sh /
 COPY getid.sh /
 
 WORKDIR /tmp
 
-RUN dpkg -i tcl-tls_*.deb && \
+# Install via apt (not dpkg -i) so runtime Depends are resolved automatically
+# from the .deb files. This handles Debian's 64-bit time_t transition: on
+# 32-bit archs (armhf), libraries like libreadline8 were renamed to
+# libreadline8t64, while 64-bit archs kept the original names. The .debs
+# we built declare the correct names per arch; apt picks the right ones.
+RUN apt-get update && \
+	apt-get install -y --no-install-recommends ./tcl-tls_*.deb && \
 	apt-mark hold tcl-tls && \
-	dpkg -i piaware_*.deb && \
-	rm -rf /tmp/* && \
+	apt-get install -y --no-install-recommends ./piaware_*.deb && \
+	apt-get clean && apt-get autoremove -y && \
+	rm -rf /var/lib/apt/lists/* /tmp/* && \
 	mkdir -p /run/piaware && \
 	chmod +x /start.sh && \
 	chmod +x /getid.sh

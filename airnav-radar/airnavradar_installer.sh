@@ -1,11 +1,14 @@
 #!/usr/bin/env bash
 set -e
 
-# Import our key to apt-key
-apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 1D043681
-
-# Create a new debian repository source file (overwrites if exists)
-echo 'deb https://apt.rb24.com/ bookworm main' > /etc/apt/sources.list.d/rb24.list
+# Fetch rb24 apt signing key. Falls back to syseleven if keyserver.ubuntu.com
+# is unreachable.
+KEY_FPR=78F6D790E30AE7F360B716FED4F914061D043681
+mkdir -p /etc/apt/keyrings
+gpg --keyserver hkps://keyserver.ubuntu.com --recv-keys "$KEY_FPR" || \
+    gpg --keyserver hkps://keyserver.syseleven.de --recv-keys "$KEY_FPR"
+gpg --export "$KEY_FPR" > /etc/apt/keyrings/rb24.gpg
+echo 'deb [signed-by=/etc/apt/keyrings/rb24.gpg] https://apt.rb24.com/ trixie main' > /etc/apt/sources.list.d/rb24.list
 
 arch="$(dpkg --print-architecture)"
 echo "System Architecture: $arch"
@@ -17,12 +20,12 @@ if [ "$arch" = "i386" ] || [ "$arch" = "amd64" ]; then
 fi
 
 # Refresh sources
-apt update
+apt-get update
 
 # --- PRE-INSTALL SYSTEMD ---
 # We install systemd explicitly first to ensure the real /usr/bin/systemctl is on disk.
 # This prevents race conditions or overwrites during the main install transaction.
-apt install -y --no-install-recommends systemd
+apt-get install -y --no-install-recommends systemd
 
 # --- MOCKING SYSTEMCTL ---
 # Divert /usr/bin/systemctl (moves the now-existing real binary to .real)
@@ -38,10 +41,10 @@ chmod +x /usr/bin/systemctl
 
 # --- INSTALL RBFEEDER ---
 if [ "$arch" = "i386" ] || [ "$arch" = "amd64" ]; then
-    apt install -y --no-install-recommends \
+    apt-get install -y --no-install-recommends \
        rbfeeder:armhf qemu-user qemu-user-static binfmt-support libc6-armhf-cross
 else
-    apt install -y --no-install-recommends \
+    apt-get install -y --no-install-recommends \
        rbfeeder
 fi
 
@@ -54,5 +57,5 @@ if dpkg-divert --list | grep -q "/usr/bin/systemctl"; then
 fi
 
 # Cleanup
-apt clean && apt autoclean && apt autoremove && \
- rm -rf /var/lib/apt/lists/*
+apt-get clean && apt-get autoremove -y && \
+ rm -rf /var/lib/apt/lists/* /root/.gnupg

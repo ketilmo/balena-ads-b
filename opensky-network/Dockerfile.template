@@ -1,4 +1,4 @@
-FROM balenalib/%%BALENA_ARCH%%-debian:bookworm AS base
+FROM debian:trixie-slim AS base
 LABEL maintainer="https://github.com/ketilmo"
 
 ENV OPENSKY_USERNAME=
@@ -10,11 +10,21 @@ ENV ALT=
 ENV RECEIVER_HOST=dump1090-fa
 ENV RECEIVER_PORT=30005
 
-ARG PERM_INSTALL="perl gettext-base tini expect" 
+ARG PERM_INSTALL="perl gettext-base tini expect ca-certificates curl adduser"
 
-RUN apt update && \
-	apt install -y $PERM_INSTALL && \
-	apt clean && apt autoclean && apt autoremove && \
+RUN printf '%s\n' \
+		'path-exclude /usr/share/doc/*' \
+		'path-exclude /usr/share/man/*' \
+		'path-exclude /usr/share/groff/*' \
+		'path-exclude /usr/share/info/*' \
+		'path-exclude /usr/share/lintian/*' \
+		'path-exclude /usr/share/linda/*' \
+		'path-exclude /usr/share/locale/*' \
+		'path-include /usr/share/locale/en*' \
+		> /etc/dpkg/dpkg.cfg.d/01_nodoc && \
+	apt-get update && \
+	apt-get install -y --no-install-recommends $PERM_INSTALL && \
+	apt-get clean && apt-get autoremove -y && \
 	rm -rf /var/lib/apt/lists/*
 
 FROM base AS buildstep
@@ -23,8 +33,8 @@ FROM base AS buildstep
 ARG OPENSKY_VERSION=2.1.7-1
 ARG TEMP_INSTALL="wget" 
 
-RUN apt update && \
-	apt install -y $TEMP_INSTALL
+RUN apt-get update && \
+	apt-get install -y --no-install-recommends $TEMP_INSTALL
 
 WORKDIR /tmp
 
@@ -48,7 +58,7 @@ WORKDIR /tmp
 RUN dpkg --unpack OpenSky.deb && \
 	rm /var/lib/dpkg/info/opensky-feeder.postinst -f && \
 	dpkg --configure opensky-feeder && \
-	apt install -yf && \
+	apt-get install -fy && \
 	chmod +x /start.sh && \
 	chmod +x /getserial.sh && \
 	rm -rf /tmp/*

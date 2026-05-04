@@ -1,10 +1,21 @@
-ARG BALENA_ARCH=%%BALENA_ARCH%%
-
-FROM balenalib/$BALENA_ARCH-debian:bookworm
+FROM debian:trixie-slim
 LABEL maintainer="https://github.com/ketilmo"
 ARG BALENA_ARCH=%%BALENA_ARCH%%
 
-RUN install_packages dnsmasq wireless-tools
+RUN printf '%s\n' \
+        'path-exclude /usr/share/doc/*' \
+        'path-exclude /usr/share/man/*' \
+        'path-exclude /usr/share/groff/*' \
+        'path-exclude /usr/share/info/*' \
+        'path-exclude /usr/share/lintian/*' \
+        'path-exclude /usr/share/linda/*' \
+        'path-exclude /usr/share/locale/*' \
+        'path-include /usr/share/locale/en*' \
+        > /etc/dpkg/dpkg.cfg.d/01_nodoc && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends dnsmasq wireless-tools curl ca-certificates && \
+    apt-get clean && apt-get autoremove -y && \
+    rm -rf /var/lib/apt/lists/*
 
 # renovate: datasource=github-releases depName=balena-os/wifi-connect
 ARG WIFI_CONNECT_VERSION=v4.11.84

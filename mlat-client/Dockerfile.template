@@ -1,4 +1,4 @@
-FROM balenalib/%%BALENA_ARCH%%-debian:bookworm AS base
+FROM debian:trixie-slim AS base
 LABEL maintainer="https://github.com/ketilmo"
 
 ENV LAT=
@@ -9,11 +9,21 @@ ENV MLAT_SERVER=
 ENV RECEIVER_HOST=dump1090-fa
 ENV RECEIVER_PORT=30005
 
-ARG PERM_INSTALL="tini python3 python3-venv" 
+ARG PERM_INSTALL="tini python3 python3-venv ca-certificates curl"
 
-RUN apt update && \
-	apt install -y $PERM_INSTALL && \
-	apt clean && apt autoclean && apt autoremove && \
+RUN printf '%s\n' \
+		'path-exclude /usr/share/doc/*' \
+		'path-exclude /usr/share/man/*' \
+		'path-exclude /usr/share/groff/*' \
+		'path-exclude /usr/share/info/*' \
+		'path-exclude /usr/share/lintian/*' \
+		'path-exclude /usr/share/linda/*' \
+		'path-exclude /usr/share/locale/*' \
+		'path-include /usr/share/locale/en*' \
+		> /etc/dpkg/dpkg.cfg.d/01_nodoc && \
+	apt-get update && \
+	apt-get install -y --no-install-recommends $PERM_INSTALL && \
+	apt-get clean && apt-get autoremove -y && \
 	rm -rf /var/lib/apt/lists/*
 
 FROM base AS buildstep
@@ -22,16 +32,17 @@ FROM base AS buildstep
 ARG MLAT_VERSION=28ae4f7409c9dfddd2bb8984baadce5d31fdc8e3
 ARG TEMP_INSTALL="build-essential debhelper python3-dev git" 
 
-RUN apt update && \
-	apt install -y $TEMP_INSTALL
+RUN apt-get update && \
+	apt-get install -y --no-install-recommends $TEMP_INSTALL
 
 WORKDIR /tmp
 
 RUN git clone --single-branch https://github.com/wiedehopf/mlat-client && \
 	cd mlat-client && \
         git checkout ${MLAT_VERSION} && \
-    python3 -m venv /usr/local/share/mlat-client/venv/ && \	
-    /usr/local/share/mlat-client/venv/bin/python3 setup.py build && \	
+    python3 -m venv /usr/local/share/mlat-client/venv/ && \
+    /usr/local/share/mlat-client/venv/bin/pip install --no-cache-dir setuptools pyasyncore && \
+    /usr/local/share/mlat-client/venv/bin/python3 setup.py build && \
     /usr/local/share/mlat-client/venv/bin/python3 setup.py install
 
 FROM base AS release
