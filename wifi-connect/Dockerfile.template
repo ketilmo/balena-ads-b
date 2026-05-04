@@ -14,6 +14,7 @@ RUN printf '%s\n' \
         > /etc/dpkg/dpkg.cfg.d/01_nodoc && \
     apt-get update && \
     apt-get install -y --no-install-recommends dnsmasq wireless-tools curl ca-certificates && \
+    apt-get clean && apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/*
 
 # renovate: datasource=github-releases depName=balena-os/wifi-connect
