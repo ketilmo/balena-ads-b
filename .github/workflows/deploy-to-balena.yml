@@ -6,15 +6,12 @@ on:
     branches:
       - master
 
-env:
-  BALENA_APP: ketil/balena-ads-b
-
 permissions:
   contents: read
 
 jobs:
   build:
-    name: "Deploy-to-Balena"
+    name: "Deploy to Balena"
     runs-on: "ubuntu-latest"
     steps:
       - name: Checkout repository
@@ -31,6 +28,6 @@ jobs:
       - name: Deploy to Balena
         uses: balena-io/deploy-to-balena-action@d03b0ace000ab84714981d2148671a3f06fa97e9 # v2.2.13
         with:
-          balena_token: ${{ secrets.BALENA_API_KEY }}
-          fleet: ${{ env.BALENA_APP }}
+          balena_token: ${{ secrets.BALENA_TOKEN }}
+          fleet: ${{ vars.FLEET }}
           multi_dockerignore: true
