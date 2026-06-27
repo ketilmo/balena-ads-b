@@ -42,6 +42,11 @@ services:
     restart: unless-stopped
     ports:
       - "80:80"
+    # Bound the Go runtime to cut RSS; GOMAXPROCS=2 trims per-thread stacks (light proxy).
+    environment:
+      - GOGC=75
+      - GOMEMLIMIT=64MiB
+      - GOMAXPROCS=2
     labels:
       io.balena.features.balena-socket: '1'
       io.balena.features.supervisor-api: '1'
@@ -147,6 +152,9 @@ services:
     environment:
       - FLIGHTAWARE_FEEDER_ID=
       - DUMP978_ENABLED=false
+      # glibc malloc tuning: fewer arenas + earlier trim -> lower RSS.
+      - MALLOC_ARENA_MAX=2
+      - MALLOC_TRIM_THRESHOLD_=131072
     labels:
       io.balena.features.supervisor-api: '1'
   fr24feed:
@@ -309,6 +317,8 @@ services:
   autohupr:
     build: ./autohupr
     restart: unless-stopped
+    # Don't set NODE_OPTIONS/UV_THREADPOOL_SIZE here — the image bakes its tuning on
+    # the node CLI and a compose env var would override (not merge) it.
     tmpfs:
       - /tmp/work
     labels:
@@ -351,6 +361,8 @@ services:
       - ALT=
       - MLAT_CLIENT_USER=
       - MLAT_SERVER=
+      - MALLOC_ARENA_MAX=2
+      - MALLOC_TRIM_THRESHOLD_=131072
     labels:
       io.balena.features.supervisor-api: '1'
   ident:
@@ -364,6 +376,8 @@ services:
       - IDENT_DATA_DIR=/run/dump1090-fa
       - IDENT_UPSTREAM_TYPE=dump1090-fa
       - IDENT_BASE_PATH=/ident
+      - GOGC=75
+      - GOMEMLIMIT=56MiB
     # expose: kept for docs, see dump1090-fa note
     # expose:
     #   - "8080"
@@ -423,6 +437,9 @@ services:
     # pid: host lets the bundled node_exporter see all host processes.
     pid: host
     environment:
+      # Soft-cap the Go heap under the 256 MB mem_limit (200MiB measured; lower regressed).
+      - GOGC=75
+      - GOMEMLIMIT=200MiB
       - OTLP_ENDPOINT=
       - OTLP_AUTH_HEADER=
       - OTLP_HEADERS=

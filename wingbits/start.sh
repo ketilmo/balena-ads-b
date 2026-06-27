@@ -108,8 +108,13 @@ if [ "$version" != "$local_version" ] || [ "$json_version" != "$local_json_versi
     rm -rf $WINGBITS_PATH/wingbits.gz
     curl -s -o $WINGBITS_PATH/wingbits.gz "https://install.wingbits.com/$json_version/$GOOS-$GOARCH.gz"
     rm -rf $WINGBITS_PATH/wingbits
-    gunzip $WINGBITS_PATH/wingbits.gz 
+    gunzip $WINGBITS_PATH/wingbits.gz
     chmod +x $WINGBITS_PATH/wingbits
+    # Decompress UPX (see wingbits_installer.sh); best-effort so an upx
+    # failure doesn't crash-loop the container — the packed binary works.
+    if grep -qa 'UPX!' "$WINGBITS_PATH/wingbits"; then
+        upx -d "$WINGBITS_PATH/wingbits" || echo "wingbits: upx -d failed; using packed binary"
+    fi
     echo "$version" > $WINGBITS_VERSION_PATH/version
     echo "$json_version" > $WINGBITS_VERSION_PATH/json-version
     echo "New Wingbits version installed: $version"

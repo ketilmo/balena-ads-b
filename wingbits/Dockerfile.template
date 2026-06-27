@@ -30,7 +30,10 @@ ENV WINGBITS_SHA256_ARM64=aexUZcB4XskSwOvITRqApBh0UhSgQMVxZyQTwGK8yAA=
 # wingbits-rev v1.12.1
 ENV WINGBITS_SHA256_ARM=cA0GRqJ1q/miM7gm5xAL9CIL68044VDDqJctoDjTq+I=
 
-ARG PERM_INSTALL="curl ca-certificates gettext-base tini ncurses-dev zlib1g jq python3-pip python3-venv wget"
+# upx-ucl: used to decompress the UPX-packed wingbits client (see
+# wingbits_installer.sh / start.sh) so its code pages are demand-paged and
+# reclaimable rather than fully resident in anonymous RAM on low-RAM devices.
+ARG PERM_INSTALL="curl ca-certificates gettext-base tini ncurses-dev zlib1g jq python3-pip python3-venv wget upx-ucl"
 
 RUN printf '%s\n' \
 		'path-exclude /usr/share/doc/*' \
