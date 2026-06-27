@@ -4,7 +4,7 @@ ARG TAR1090_VERSION=latest-build-1436
 FROM ghcr.io/sdr-enthusiasts/docker-tar1090:${TAR1090_VERSION} AS base
 LABEL maintainer="https://github.com/ketilmo"
 
-ARG TAR1090_NGINX_REF=af826d147a2112b951d71cafc18c06bcbec7b640
+ARG TAR1090_NGINX_REF=19af7d4491d4e7014243f12d03a647785e85c7ab
 # TAR1090_NGINX_REF is the master-branch commit SHA of wiedehopf/tar1090;
 # tracked by the git-refs custom manager in renovate.json.
 
