@@ -3,7 +3,7 @@ LABEL maintainer="https://github.com/ketilmo"
 
 # specify plane.watch pw-feeder version
 # renovate: datasource=github-tags depName=plane-watch/pw-feeder versioning=loose
-ARG PLANEWATCH_VERSION=v0.0.9
+ARG PLANEWATCH_VERSION=v0.0.10
 
 # specify mlat-client version
 # renovate: datasource=github-tags depName=mutability/mlat-client versioning=loose
