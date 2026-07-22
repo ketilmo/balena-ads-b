@@ -43,7 +43,7 @@ FROM base AS buildstep
 # renovate: datasource=github-tags depName=osmocom/rtl-sdr versioning=loose
 ARG RTLSDR_VERSION=v2.0.2
 # renovate: datasource=github-tags depName=flightaware/dump1090 versioning=loose
-ARG DUMP1090_VERSION=v11.0
+ARG DUMP1090_VERSION=v11.1
 # renovate: datasource=github-tags depName=flightaware/beast-splitter versioning=loose
 ARG BEAST_SPLITTER_VERSION=v10.2
 # AIRSPY_VERSION is the master-branch commit SHA of wiedehopf/airspy-conf;
