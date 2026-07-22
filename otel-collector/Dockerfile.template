@@ -4,7 +4,7 @@
 
 # Global ARGs must be declared before the first FROM to be visible to every stage.
 # renovate: datasource=docker depName=otel/opentelemetry-collector-contrib versioning=semver
-ARG OTELCOL_VERSION=0.156.0
+ARG OTELCOL_VERSION=0.157.0
 # renovate: datasource=docker depName=prom/node-exporter versioning=semver
 ARG NODE_EXPORTER_VERSION=1.12.1
 
