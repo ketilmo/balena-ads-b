@@ -23,7 +23,7 @@ RUN printf '%s\n' \
 FROM base AS buildstep
 
 # renovate: datasource=github-releases depName=traefik/traefik versioning=semver
-ARG TRAEFIK_VERSION=3.7.9
+ARG TRAEFIK_VERSION=3.7.10
 ARG TEMP_INSTALL="wget"
 
 COPY traefik_installer.sh /tmp
