@@ -1,4 +1,4 @@
 # renovate: datasource=docker depName=ghcr.io/schubydoo/autohupr versioning=docker
-ARG AUTOHUPR_VERSION=0.5.11
+ARG AUTOHUPR_VERSION=0.5.12
 FROM ghcr.io/schubydoo/autohupr:${AUTOHUPR_VERSION}
 LABEL maintainer="https://github.com/ketilmo"
