@@ -28,7 +28,7 @@ RUN printf '%s\n' \
 FROM base AS buildstep
 
 # renovate: datasource=github-tags depName=osmocom/rtl-sdr versioning=loose
-ARG RTLSDR_VERSION=v2.0.2
+ARG RTLSDR_VERSION=v2.0.3
 # SOAPYRTLSDR_VERSION is the master-branch commit SHA of pothosware/SoapyRTLSDR;
 # tracked by the git-refs custom manager in renovate.json.
 ARG SOAPYRTLSDR_VERSION=b1f568d1b57cc973a1d2ee49be68d0d748d164e4
