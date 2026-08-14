@@ -33,7 +33,7 @@ RUN printf '%s\n' \
 FROM base AS buildstep
 
 # renovate: datasource=github-tags depName=wiedehopf/readsb versioning=loose
-ARG READSB_VERSION=v3.16.15
+ARG READSB_VERSION=v3.16.16
 # MLAT_VERSION is the master-branch commit SHA of wiedehopf/mlat-client;
 # tracked by the git-refs custom manager in renovate.json.
 ARG MLAT_VERSION=28ae4f7409c9dfddd2bb8984baadce5d31fdc8e3
