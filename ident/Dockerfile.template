@@ -1,5 +1,5 @@
 # renovate: datasource=docker depName=ghcr.io/ident-1090/ident
-ARG IDENT_VERSION=v0.5.0
+ARG IDENT_VERSION=v0.5.1
 
 FROM ghcr.io/ident-1090/ident:${IDENT_VERSION}
 LABEL maintainer="https://github.com/ketilmo"
