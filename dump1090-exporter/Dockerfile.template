@@ -1,6 +1,6 @@
 # Wraps ghcr.io/schubydoo/dump1090-exporter (MIT) with the ENABLED_SERVICES gate.
 # renovate: datasource=docker depName=ghcr.io/schubydoo/dump1090-exporter versioning=semver
-ARG DUMP1090_EXPORTER_VERSION=0.3.2
+ARG DUMP1090_EXPORTER_VERSION=0.3.3
 FROM ghcr.io/schubydoo/dump1090-exporter:${DUMP1090_EXPORTER_VERSION}
 
 LABEL maintainer="https://github.com/ketilmo"
