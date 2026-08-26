@@ -1,5 +1,5 @@
 # renovate: datasource=custom.klutchell-balena-tailscale depName=tailscale
-ARG TAILSCALE_VERSION=1.102.2
+ARG TAILSCALE_VERSION=1.102.3
 FROM bh.cr/gh_klutchell/tailscale-%%BALENA_ARCH%%/$TAILSCALE_VERSION AS base
 LABEL maintainer="https://github.com/ketilmo"
 
