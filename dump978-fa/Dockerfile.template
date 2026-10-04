@@ -31,7 +31,7 @@ FROM base AS buildstep
 ARG RTLSDR_VERSION=v2.0.3
 # SOAPYRTLSDR_VERSION is the master-branch commit SHA of pothosware/SoapyRTLSDR;
 # tracked by the git-refs custom manager in renovate.json.
-ARG SOAPYRTLSDR_VERSION=6ca357c15cbf676ff30eb8eb445d1e1eac17c136
+ARG SOAPYRTLSDR_VERSION=d060b48b8e2d5eb46f32e722b61ebeaf2654e58e
 # renovate: datasource=github-tags depName=flightaware/dump978 versioning=loose
 ARG DUMP978_VERSION=v11.1
 ARG TEMP_INSTALL="build-essential cmake git debhelper pkg-config libboost-system-dev libboost-regex-dev libusb-1.0-0-dev libboost-filesystem-dev libboost-program-options-dev libsoapysdr-dev"
