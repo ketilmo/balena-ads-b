@@ -57,7 +57,7 @@ RUN	git clone https://github.com/pothosware/SoapyRTLSDR.git && \
 	mkdir build && cd build && cmake .. && make && cd .. && \
 	dpkg-buildpackage -b && cd .. && \
 	apt-get install -y --no-install-recommends --allow-downgrades \
-		./soapysdr0.7*.deb ./soapysdr-module-rtlsdr_*.deb && \
+		./soapysdr0.*.deb ./soapysdr-module-rtlsdr_*.deb && \
 	apt-mark hold soapysdr-module-rtlsdr
 
 WORKDIR /tmp
@@ -71,7 +71,7 @@ FROM base AS release
 
 COPY --from=buildstep /tmp/librtlsdr0_*.deb /tmp/
 COPY --from=buildstep /tmp/rtl-sdr_*.deb /tmp/
-COPY --from=buildstep /tmp/soapysdr0.7*.deb /tmp/
+COPY --from=buildstep /tmp/soapysdr0.*.deb /tmp/
 COPY --from=buildstep /tmp/soapysdr-module-rtlsdr_*.deb /tmp/
 COPY --from=buildstep /tmp/dump978-fa_*.deb /tmp/
 COPY --from=buildstep /tmp/skyaware978_*.deb /tmp/
@@ -83,7 +83,7 @@ WORKDIR /tmp
 RUN apt-get update && \
 	apt-get install -y --no-install-recommends \
 		./librtlsdr0_*.deb ./rtl-sdr_*.deb \
-		./soapysdr0.7*.deb ./soapysdr-module-rtlsdr_*.deb \
+		./soapysdr0.*.deb ./soapysdr-module-rtlsdr_*.deb \
 		./dump978-fa_*.deb ./skyaware978_*.deb && \
 	apt-mark hold librtlsdr0 rtl-sdr soapysdr-module-rtlsdr && \
 	apt-get clean && apt-get autoremove -y && \
