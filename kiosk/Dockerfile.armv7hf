@@ -1,0 +1,18 @@
+# The browser block is not published for 32-bit Arm. This stub keeps the rest
+# of the app building on armv7hf and idles instead of starting a browser.
+FROM alpine:3.24 AS base
+LABEL maintainer="https://github.com/ketilmo"
+
+# bash and curl are needed by start.sh to honour DISABLED_SERVICES
+RUN apk add --no-cache \
+        bash \
+        ca-certificates \
+        curl \
+        tini
+
+COPY start.sh /usr/src/app/start_custom.sh
+COPY unsupported.sh /usr/src/app/start.sh
+
+RUN chmod +x /usr/src/app/start_custom.sh /usr/src/app/start.sh
+
+ENTRYPOINT ["/sbin/tini", "--", "/usr/src/app/start_custom.sh"]

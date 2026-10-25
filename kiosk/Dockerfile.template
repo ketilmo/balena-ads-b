@@ -1,21 +1,17 @@
-# renovate: datasource=github-tags depName=balena-io-experimental/browser versioning=loose
-ARG BROWSER_VERSION=2.12.3
-FROM bh.cr/balenalabs/browser-%%BALENA_ARCH%%/$BROWSER_VERSION AS base
+# The browser block is published per device type. This template is the
+# generic fallback for 64-bit devices (aarch64, amd64); balena prefers a
+# matching Dockerfile.<device-type> (Raspberry Pi) or Dockerfile.<arch>
+# (armv7hf) over it.
+# renovate: datasource=github-tags depName=balenasolutions/browser versioning=loose
+ARG BROWSER_VERSION=3.0.4
+FROM bh.cr/balenasolutions/browser-generic-%%BALENA_ARCH%%/$BROWSER_VERSION AS base
 LABEL maintainer="https://github.com/ketilmo"
 
-# Drop archive.raspberrypi.com from apt sources before updating. On trixie
-# `apt` uses sqv for signature verification, which rejects the Raspberry
-# Pi archive's self-signed key (SHA1, banned by sqv policy since
-# 2026-02-01) and fails the whole update. The repo is only present in the
-# armv7hf browser base image and we don't install anything from it —
-# cec-utils and tini both come from Debian main.
-RUN rm -f /etc/apt/sources.list.d/raspi.list && \
-    apt-get update && \
-    apt-get install -y --no-install-recommends \
-        cec-utils \
-        tini && \
-    apt-get clean && apt-get autoremove -y && \
-    rm -rf /var/lib/apt/lists/*
+COPY kiosk_installer.sh /tmp/
+
+RUN chmod +x /tmp/kiosk_installer.sh && \
+    /tmp/kiosk_installer.sh && \
+    rm -f /tmp/kiosk_installer.sh
 
 COPY start.sh /usr/src/app/start_custom.sh
 

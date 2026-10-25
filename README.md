@@ -443,7 +443,23 @@ In order to manually set the gain. click on the *Device Variables*-button in the
 By default, these viewers are fed with ADS-B data from the dump1090 container and with MLAT data from the adsb-exchange container, however you can also manually configure these. You can use the *Device Variables* `BEASTHOST` and `BEASTPORT` (default `dump1090-fa` and `30005` respectively) for ADS-B data input and the *Device Variables* `MLATHOST` and `MLATPORT` (default `adsb-exchange` and `30157` respectively) to configure the inputs you desire.
 
 # Part 13 – Add a digital display (Optional)
-balena also produces a project that can be easily configured to display a webpage in kiosk mode on a digital display called balenaDash. By dropping that project into this one, we can automatically display a feeder page directly from the Pi. We can then set a `LAUNCH_URL` device variable configured to connect to `http://{{YOURIP or YOURSERVICENAME}}:YOURSERVICEPORT` (where the service/port is one of the frontends above, like `http://planefinder:30053`) and that will automatically be displayed on the attached display. The balenaDash service can be configured locally by accessing the webserver on port 8081.
+The `kiosk` service is a Chromium browser (the balena [browser](https://github.com/balenasolutions/browser) block) that displays a webpage in kiosk mode on a digital display attached to your device. It renders through the `display` service, a [Weston](https://wayland.freedesktop.org/) Wayland compositor (the balena [display](https://github.com/balenasolutions/display) block) that owns the screen. Both services are included in this project. By setting a `LAUNCH_URL` device variable configured to connect to `http://{{YOURIP or YOURSERVICENAME}}:YOURSERVICEPORT` (where the service/port is one of the frontends above, like `http://planefinder:30053`), that page is automatically displayed on the attached display. The kiosk can be configured locally by accessing the management API on port 8081, for example `curl -X POST --data "url=http://planefinder:30053" http://YOURIP:8081/url`. See the [browser block documentation](https://github.com/balenasolutions/browser#environment-variables) for all supported variables, such as `KIOSK`, `ENABLE_GPU` and `EXTRA_FLAGS`.
+
+**Rotating the screen and setting the resolution.** The `display` service owns the screen, so rotation and resolution are set on it, not on `kiosk`. Create the following *Device Variables* for the `display` service:
+
+| Variable | Options | Description |
+|----------|---------|-------------|
+| `DISPLAY_ROTATION` | `0`, `90`, `180`, `270` | Rotates the picture clockwise by this many degrees. Touch input follows the rotation automatically. |
+| `DISPLAY_RESOLUTION` | `WIDTHxHEIGHT` or `WIDTHxHEIGHT@REFRESH` | For example `1920x1080`. Leave unset to use the display's native mode. When using `DISPLAY_ROTATION` of `90` or `270`, set this to the panel's native resolution. |
+| `DISPLAY_SCALE` | Integer ≥ 1 | Output scaling factor, for example `2` for HiDPI displays. |
+
+See the [display block documentation](https://github.com/balenasolutions/display#display-geometry--rotation) for details. Only the first connected display is configured.
+
+**Hardware acceleration.** Set the `ENABLE_GPU` variable to `1` on the `kiosk` service to turn on GPU rendering and hardware video decode. On the Raspberry Pi 3 and 4, hardware video decode also needs additional device configuration, as described [here](https://github.com/balenasolutions/browser#raspberry-pi-3--4-device-configuration).
+
+**Disabling the display.** If you do not have a display attached, you can stop both services by adding `kiosk, display` to the `DISABLED_SERVICES` variable. See [Disabling specific services](#disabling-specific-services).
+
+**Upgrading from the previous kiosk.** The browser block moved from X11 to Wayland. The `ROTATE_DISPLAY`, `ROTATE_DELAY`, `TOUCHSCREEN`, `WINDOW_SIZE`, `WINDOW_POSITION`, `SHOW_CURSOR` and `DISPLAY_NUM` variables no longer exist on `kiosk`. Use `DISPLAY_ROTATION` (degrees clockwise: `left` is `270`, `right` is `90`, `inverted` is `180`) and `DISPLAY_RESOLUTION` on the `display` service instead. Custom `FLAGS` values now replace *all* of the block's default flags, so move any flags you want to add to `EXTRA_FLAGS`. Audio now plays directly through ALSA, and the `audio` block is no longer wired in automatically. 32-bit Raspberry Pi OS (`armv7hf`) is no longer supported by the kiosk; use the 64-bit OS to get a display.
 
 # Part 14 – Exploring flight traffic locally on your device
 If the setup goes well, you should feed flight traffic data to several online services. You will receive access to the providers' premium services in return for your efforts. But in addition to this, you can explore the data straight from your device, raw and unedited. And that's part of the magic, right?

@@ -1,6 +1,7 @@
 version: '2.4'
 volumes:
   settings:
+  display-socket:
   airnav-radar:
   tar1090:
   tar1090-timelapse:
@@ -9,14 +10,33 @@ volumes:
   aircraft-data:
   tailscale-state:
 services:
+  # Wayland compositor (Weston). Owns the screen; rotation and resolution
+  # are configured here via DISPLAY_ROTATION / DISPLAY_RESOLUTION.
+  display:
+    restart: unless-stopped
+    build: ./display
+    privileged: true
+    volumes:
+      - 'display-socket:/run'
+    labels:
+      io.balena.features.dbus: '1'
+      io.balena.features.supervisor-api: '1'
   kiosk:
     restart: unless-stopped
     build: ./kiosk
     privileged: true
+    depends_on:
+      - display
+    environment:
+      - XDG_RUNTIME_DIR=/run/user/0
+      - WAYLAND_DISPLAY=wayland-0
+    devices:
+      - "/dev/dri:/dev/dri"
     ports:
-      - 8081:8080
+      - 8081:5011
     volumes:
       - 'settings:/data'
+      - 'display-socket:/run'
     labels:
       io.balena.features.supervisor-api: '1'
   wifi-connect:

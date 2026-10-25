@@ -1,0 +1,18 @@
+# Raspberry Pi image of the browser block (Raspberry Pi-patched Chromium).
+# balena picks this over Dockerfile.template for raspberrypi3-64 fleets.
+# renovate: datasource=github-tags depName=balenasolutions/browser versioning=loose
+ARG BROWSER_VERSION=3.0.4
+FROM bh.cr/balenasolutions/browser-raspberrypi3-64/$BROWSER_VERSION AS base
+LABEL maintainer="https://github.com/ketilmo"
+
+COPY kiosk_installer.sh /tmp/
+
+RUN chmod +x /tmp/kiosk_installer.sh && \
+    /tmp/kiosk_installer.sh && \
+    rm -f /tmp/kiosk_installer.sh
+
+COPY start.sh /usr/src/app/start_custom.sh
+
+RUN chmod +x /usr/src/app/start_custom.sh
+
+ENTRYPOINT ["/usr/bin/tini", "--", "/usr/src/app/start_custom.sh"]
