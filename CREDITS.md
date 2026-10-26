@@ -4,6 +4,7 @@ This project automatically downloads, installs and configures several third part
 
 - [adsbexchange-978](#adsbexchange-978)
 - [kiosk](#kiosk)
+- [display](#display)
 - [dump978](#dump978)
 - [dump1090](#dump1090)
 - [fr24feed](#fr24feed)
@@ -52,10 +53,17 @@ SOFTWARE.
 
 ## kiosk
 ### URL
-https://github.com/balena-io-experimental/browser
+https://github.com/balenasolutions/browser
 
 ### License
 Not specified.
+
+## display
+### URL
+https://github.com/balenasolutions/display
+
+### License
+Apache License, Version 2.0. The full text is available at https://github.com/balenasolutions/display/blob/master/LICENSE
 
 ## dump978
 ### URL
