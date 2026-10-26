@@ -23,6 +23,9 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           persist-credentials: false
+          # Fork PRs from the owner or a collaborator are allowed. The job
+          # still waits for approval of the balena-draft-fleet environment.
+          allow-unsafe-pr-checkout: ${{ contains(fromJSON('["OWNER","COLLABORATOR"]'), github.event.pull_request.author_association) }}
 
       - name: Build on Balena with ${{ matrix.architecture }} architecture (attempt 1)
         id: build1
