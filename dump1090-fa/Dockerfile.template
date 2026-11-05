@@ -1,4 +1,4 @@
-FROM debian:trixie-slim AS base
+FROM debian:13.7-slim AS base
 LABEL maintainer="https://github.com/ketilmo"
 
 EXPOSE 30001 30002 30003 30004 30005 30102 30104 30105 30106 8080
