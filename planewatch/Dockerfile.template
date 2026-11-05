@@ -32,7 +32,7 @@ RUN git clone --branch "$MLAT_CLIENT_VERSION" https://github.com/mutability/mlat
     /usr/local/share/mlat-client/venv/bin/pip install --no-cache-dir setuptools pyasyncore && \
     /usr/local/share/mlat-client/venv/bin/pip install --no-cache-dir --no-build-isolation .
 
-FROM debian:trixie-slim AS release
+FROM debian:13.7-slim AS release
 
 ENV LAT=
 ENV LON=
