@@ -1,4 +1,4 @@
-FROM debian:trixie-slim AS base
+FROM debian:13.7-slim AS base
 LABEL maintainer="https://github.com/ketilmo"
 
 EXPOSE 80 8080 443
