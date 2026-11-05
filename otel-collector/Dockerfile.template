@@ -11,7 +11,7 @@ ARG NODE_EXPORTER_VERSION=1.12.1
 FROM otel/opentelemetry-collector-contrib:${OTELCOL_VERSION} AS otelcol-bin
 FROM prom/node-exporter:v${NODE_EXPORTER_VERSION} AS node-exporter-bin
 
-FROM debian:trixie-slim
+FROM debian:13.7-slim
 LABEL maintainer="https://github.com/ketilmo"
 
 # `systemd` is here purely for `/usr/bin/journalctl` — otelcol-contrib's
