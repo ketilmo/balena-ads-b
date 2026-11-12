@@ -365,7 +365,7 @@ To enable a single service, you would need to add a *Device Variable* with one o
 
 Lastly, these services all require a UUID to be passed to identify devices in their system. If you have set an `ADSB_EXCHANGE_UUID` the same UUID will be used for all services. If you do not have ADSB Exchange enabled and the `ADSB_EXCHANGE_UUID` variable set, the system will automatically generate one for you. However, if you would like, you can also set a UUID manually using the *Device Variable* with name `UUID` and with a UUID as a value (e.g. 2ddf6698-ea34-4c39-bbce-a8c3ddaf9bbd). You can use an [online UUID generator](https://www.uuidgenerator.net/) to generate one should you want to.
 
-If you feed PlaneTrack, you can link the station to a PlaneTrack account at `https://planetrack.ai/myip?uuid=<your UUID>` (run `cat /run/uuid` in a terminal session on the *adsb-exchange* service to see the UUID in use); claimed stations get PlaneTrack Premium free while they feed. An automatically generated UUID can change when the service container is recreated, so set `UUID` (or `ADSB_EXCHANGE_UUID`) first if you want the claim to stick.
+If you feed PlaneTrack, you can link the station to a PlaneTrack account at `https://planetrack.ai/myip?uuid=<your UUID>` (run `cat /run/uuid` in a terminal session on the *adsb-exchange* service to see the UUID in use); claimed stations get PlaneTrack Premium free while they feed. An automatically generated UUID can change when the service container is recreated, so set `UUID` (or `ADSB_EXCHANGE_UUID` if ADSB Exchange is also enabled) first if you want the claim to stick.
 
 # Part 9 – Configure Wingbits
 
