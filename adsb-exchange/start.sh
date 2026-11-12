@@ -236,6 +236,17 @@ then
      	MLAT_SERVER+=("--server=dati.flyitalyadsb.com:30100")
       	# MLAT_SERVER+=("--results beast,listen,39007")
 fi
+if [ -z "$PLANETRACK_ENABLE" ]
+then
+	echo "PlaneTrack disabled, skipping."
+ else
+	echo "PlaneTrack service enabled."
+ 	adsb="true"
+  	mlat="true"
+	ADSB_NET_CONNECTOR+=("--net-connector=feed.planetrack.ai,30004,beast_reduce_plus_out")
+     	MLAT_SERVER+=("--server=feed.planetrack.ai:31090")
+      	# MLAT_SERVER+=("--results beast,listen,39008")
+fi
 
 # End defining all the required configuration variables.
 
