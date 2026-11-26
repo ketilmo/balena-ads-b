@@ -6,7 +6,7 @@
 # renovate: datasource=docker depName=otel/opentelemetry-collector-contrib versioning=semver
 ARG OTELCOL_VERSION=0.166.0
 # renovate: datasource=docker depName=prom/node-exporter versioning=semver
-ARG NODE_EXPORTER_VERSION=1.12.1
+ARG NODE_EXPORTER_VERSION=1.13.1
 
 FROM otel/opentelemetry-collector-contrib:${OTELCOL_VERSION} AS otelcol-bin
 FROM prom/node-exporter:v${NODE_EXPORTER_VERSION} AS node-exporter-bin
